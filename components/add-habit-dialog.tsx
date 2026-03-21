@@ -98,14 +98,19 @@ export function AddHabitDialog() {
             <div className="grid grid-cols-3 gap-2">
               {phases.map((p) => {
                 const Icon = p.icon;
+                const isSelected = phase === p.id; // Verifica se este é o selecionado
+
                 return (
                   <Button
                     key={p.id}
                     type="button"
-                    variant="outline"
+                    // Troca o visual inteiro do botão baseado na seleção
+                    variant={isSelected ? "default" : "outline"}
                     className={cn(
-                      "flex flex-col items-center gap-1 h-auto py-3",
-                      phase === p.id && "border-primary bg-primary/10",
+                      "flex flex-col items-center gap-1 h-auto py-3 transition-all",
+                      // Se não estiver selecionado, deixa o texto e ícone mais apagados
+                      !isSelected &&
+                        "text-muted-foreground hover:text-foreground",
                     )}
                     onClick={() => setPhase(p.id)}
                   >

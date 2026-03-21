@@ -1,16 +1,17 @@
-import { redirect } from "next/navigation"
-import { getSession } from "@/lib/auth"
+// app/(app)/layout.tsx
+import { redirect } from "next/navigation";
+import { getSession } from "@/lib/auth";
 
 export default async function AppLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const session = await getSession()
-  
+  const session = await getSession();
+
   if (!session) {
-    redirect("/login")
+    redirect("/login");
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }

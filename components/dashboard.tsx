@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import { motion } from "framer-motion";
 import { Header } from "@/components/header";
-import { BottomNav } from "@/components/bottom-nav";
+// Remova o import do BottomNav daqui, vamos colocá-lo no layout!
 import { EnergyModeSelector } from "@/components/energy-mode-selector";
 import { HabitsList } from "@/components/habits-list";
 import { DopamineProgress } from "@/components/dopamine-progress";
@@ -12,8 +12,6 @@ import { DailyNoteCard } from "@/components/daily-note-card";
 import { AddHabitDialog } from "@/components/add-habit-dialog";
 import { CelebrationOverlay } from "@/components/celebration-overlay";
 import { WeekNavigator } from "@/components/week-navigator";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 interface User {
   id: string;
@@ -38,17 +36,14 @@ export function Dashboard({ user }: DashboardProps) {
 
   const dateString = selectedDate.toISOString().split("T")[0];
 
-  const { data: habitsData, mutate: mutateHabits } = useSWR(
+  const { data: habitsData } = useSWR(
     `/api/habits?date=${dateString}`,
     fetcher,
     { revalidateOnFocus: false },
   );
-
-  const { data: noteData, mutate: mutateNote } = useSWR(
-    `/api/notes?date=${dateString}`,
-    fetcher,
-    { revalidateOnFocus: false },
-  );
+  const { data: noteData } = useSWR(`/api/notes?date=${dateString}`, fetcher, {
+    revalidateOnFocus: false,
+  });
 
   const habits = habitsData?.habits || [];
   const logs = habitsData?.logs || [];
@@ -72,19 +67,19 @@ export function Dashboard({ user }: DashboardProps) {
     0,
   );
 
-  // Removidas as funções de handle, pois os componentes filhos gerenciam suas próprias Server Actions.
-
   const isToday = selectedDate.toDateString() === new Date().toDateString();
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    // Removido o pb-20 fixo e ajustado para dar margem à sidebar no desktop
+    <div className="min-h-screen bg-background pb-24 md:pb-6 md:pl-24 lg:pl-64 transition-all">
       <Header userName={user.name || undefined} />
 
-      <main className="container px-4 py-6 space-y-6">
+      {/* Adicionado max-w-7xl e mx-auto para centralizar em monitores ultrawide */}
+      <main className="container mx-auto px-4 py-6 max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+          className="mb-8"
         >
           <WeekNavigator
             selectedDate={selectedDate}
@@ -92,65 +87,70 @@ export function Dashboard({ user }: DashboardProps) {
           />
         </motion.div>
 
-        {isToday && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
-          >
-            {/* O componente original não aceita onModeChange, pois ele mesmo atualiza via Server Action */}
-            <EnergyModeSelector currentMode={energyMode} />
-          </motion.div>
-        )}
+        {/* Início do Grid Responsivo */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* COLUNA ESQUERDA (Ocupa 8 de 12 colunas no Desktop) */}
+          <div className="lg:col-span-8 space-y-6">
+            {isToday && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+              >
+                <EnergyModeSelector currentMode={energyMode} />
+              </motion.div>
+            )}
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-        >
-          <DopamineProgress
-            completed={completedCount}
-            total={totalCount}
-            dopaminePoints={dopaminePoints}
-            maxPoints={maxDopaminePoints}
-          />
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.3 }}
-          className="space-y-4"
-        >
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-foreground">
-              Seus hábitos
-            </h2>
-            <AddHabitDialog />
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-4"
+            >
+              <div className="flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-foreground">
+                  Seus hábitos
+                </h2>
+                <AddHabitDialog />
+              </div>
+              <HabitsList
+                habits={habits}
+                logs={logs}
+                date={dateString}
+                energyMode={energyMode}
+              />
+            </motion.div>
           </div>
 
-          <HabitsList
-            habits={habits}
-            logs={logs}
-            date={dateString}
-            energyMode={energyMode}
-          />
-        </motion.div>
+          {/* COLUNA DIREITA (Ocupa 4 de 12 colunas no Desktop) */}
+          <div className="lg:col-span-4 space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              <DopamineProgress
+                completed={completedCount}
+                total={totalCount}
+                dopaminePoints={dopaminePoints}
+                maxPoints={maxDopaminePoints}
+              />
+            </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.4 }}
-        >
-          <DailyNoteCard
-            date={dateString}
-            note={note}
-            yesterdayReminder={""} // Passando string vazia caso não haja lógica para isso ainda
-          />
-        </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+            >
+              <DailyNoteCard
+                date={dateString}
+                note={note}
+                yesterdayReminder={""}
+              />
+            </motion.div>
+          </div>
+        </div>
       </main>
-
-      <BottomNav />
 
       <CelebrationOverlay
         show={showCelebration}

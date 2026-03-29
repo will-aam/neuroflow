@@ -1,55 +1,50 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import useSWR from "swr"
-import { motion } from "framer-motion"
-import { ChevronLeft, ChevronRight, StickyNote, Lightbulb } from "lucide-react"
-import { Header } from "@/components/header"
-import { BottomNav } from "@/components/bottom-nav"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import useSWR from "swr";
+import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight, StickyNote, Lightbulb } from "lucide-react";
+import { Header } from "@/components/header";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
-const fetcher = (url: string) => fetch(url).then(res => res.json())
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function NotesPage() {
-  const [currentDate, setCurrentDate] = useState(new Date())
-  const [content, setContent] = useState("")
-  const [reminder, setReminder] = useState("")
-  const [isSaving, setIsSaving] = useState(false)
-  const [hasChanges, setHasChanges] = useState(false)
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [content, setContent] = useState("");
+  const [reminder, setReminder] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
-  const dateString = currentDate.toISOString().split("T")[0]
-  
-  const { data, mutate } = useSWR(
-    `/api/notes?date=${dateString}`,
-    fetcher,
-    {
-      onSuccess: (data) => {
-        if (data.note) {
-          setContent(data.note.content || "")
-          setReminder(data.note.reminder_for_tomorrow || "")
-        } else {
-          setContent("")
-          setReminder("")
-        }
-        setHasChanges(false)
+  const dateString = currentDate.toISOString().split("T")[0];
+
+  const { data, mutate } = useSWR(`/api/notes?date=${dateString}`, fetcher, {
+    onSuccess: (data) => {
+      if (data.note) {
+        setContent(data.note.content || "");
+        setReminder(data.note.reminder_for_tomorrow || "");
+      } else {
+        setContent("");
+        setReminder("");
       }
-    }
-  )
+      setHasChanges(false);
+    },
+  });
 
   const navigateDay = (direction: number) => {
-    const newDate = new Date(currentDate)
-    newDate.setDate(newDate.getDate() + direction)
+    const newDate = new Date(currentDate);
+    newDate.setDate(newDate.getDate() + direction);
     if (newDate <= new Date()) {
-      setCurrentDate(newDate)
+      setCurrentDate(newDate);
     }
-  }
+  };
 
   const handleSave = async () => {
-    if (!content.trim()) return
-    
-    setIsSaving(true)
+    if (!content.trim()) return;
+
+    setIsSaving(true);
     try {
       await fetch("/api/notes", {
         method: "POST",
@@ -57,47 +52,49 @@ export default function NotesPage() {
         body: JSON.stringify({
           date: dateString,
           content: content.trim(),
-          reminderForTomorrow: reminder.trim() || null
-        })
-      })
-      mutate()
-      setHasChanges(false)
+          reminderForTomorrow: reminder.trim() || null,
+        }),
+      });
+      mutate();
+      setHasChanges(false);
     } finally {
-      setIsSaving(false)
+      setIsSaving(false);
     }
-  }
+  };
 
   const formatDate = (date: Date) => {
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    const compareDate = new Date(date)
-    compareDate.setHours(0, 0, 0, 0)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const compareDate = new Date(date);
+    compareDate.setHours(0, 0, 0, 0);
 
     if (compareDate.getTime() === today.getTime()) {
-      return "Hoje"
+      return "Hoje";
     }
-    
-    const yesterday = new Date(today)
-    yesterday.setDate(yesterday.getDate() - 1)
+
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
     if (compareDate.getTime() === yesterday.getTime()) {
-      return "Ontem"
+      return "Ontem";
     }
 
     return date.toLocaleDateString("pt-BR", {
       weekday: "long",
       day: "numeric",
-      month: "long"
-    })
-  }
+      month: "long",
+    });
+  };
 
-  const isToday = currentDate.toDateString() === new Date().toDateString()
-  const yesterdayReminder = data?.yesterdayReminder
+  const isToday = currentDate.toDateString() === new Date().toDateString();
+  const yesterdayReminder = data?.yesterdayReminder;
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    // ✅ AJUSTE: Classes de espaçamento para a Sidebar no Desktop
+    <div className="min-h-screen bg-background pb-24 md:pb-6 md:pl-24 lg:pl-64 transition-all">
       <Header />
-      
-      <main className="container px-4 py-6 space-y-6">
+
+      {/* ✅ AJUSTE: max-w-7xl e mx-auto para centralizar o conteúdo em monitores grandes */}
+      <main className="container mx-auto max-w-7xl px-4 py-6 space-y-6">
         {/* Date navigation */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -152,12 +149,12 @@ export default function NotesPage() {
           </motion.div>
         )}
 
-        {/* Note editor */}
+        {/* Note editor - Adicionei um max-w-3xl opcional se quiser que o formulário não fique esticado demais em telas ultrawide */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="rounded-2xl bg-card p-6 shadow-sm border border-border space-y-4"
+          className="rounded-2xl bg-card p-6 shadow-sm border border-border space-y-4 max-w-3xl mx-auto w-full"
         >
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
@@ -178,10 +175,10 @@ export default function NotesPage() {
               placeholder="Escreva sobre seu dia, como você se sentiu, o que aprendeu..."
               value={content}
               onChange={(e) => {
-                setContent(e.target.value)
-                setHasChanges(true)
+                setContent(e.target.value);
+                setHasChanges(true);
               }}
-              className="min-h-[150px] resize-none"
+              className="min-h-32 resize-none" // Troquei min-h-37.5 por min-h-32 (valor padrão do tailwind)
             />
           </div>
 
@@ -192,10 +189,10 @@ export default function NotesPage() {
               placeholder="Algo que você quer lembrar amanhã..."
               value={reminder}
               onChange={(e) => {
-                setReminder(e.target.value)
-                setHasChanges(true)
+                setReminder(e.target.value);
+                setHasChanges(true);
               }}
-              className="min-h-[80px] resize-none"
+              className="min-h-20 resize-none"
             />
           </div>
 
@@ -208,8 +205,6 @@ export default function NotesPage() {
           </Button>
         </motion.div>
       </main>
-
-      <BottomNav />
     </div>
-  )
+  );
 }

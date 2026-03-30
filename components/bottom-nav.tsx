@@ -36,9 +36,10 @@ const navItems = [
 
 interface ResponsiveNavProps {
   userName?: string;
+  avatarSeed?: string | null;
 }
 
-export function ResponsiveNav({ userName }: ResponsiveNavProps) {
+export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -48,13 +49,17 @@ export function ResponsiveNav({ userName }: ResponsiveNavProps) {
     await logout();
   };
 
-  // Classe base para os botões de ação ficarem iguais aos links de navegação
   const actionItemClass =
     "relative flex flex-col md:flex-row items-center md:justify-center lg:justify-start gap-1 md:gap-4 px-3 md:px-4 py-2 md:py-3 md:w-full md:rounded-xl transition-colors group text-muted-foreground hover:text-foreground md:hover:bg-muted shrink-0 cursor-pointer bg-transparent border-none";
 
+  const seedToUse = avatarSeed || userName || "Neuroflow";
+  const avatarUrl = `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${encodeURIComponent(
+    seedToUse,
+  )}`;
+
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 safe-area-inset-bottom
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 safe-area-inset-bottom
       md:top-0 md:right-auto md:w-24 lg:w-64 md:border-t-0 md:border-r md:h-screen flex md:flex-col transition-all duration-300"
     >
       {/* Logo exclusivo para Desktop */}
@@ -73,7 +78,7 @@ export function ResponsiveNav({ userName }: ResponsiveNavProps) {
         </span>
       </div>
 
-      {/* Container com scroll horizontal no mobile para caber todos os ícones */}
+      {/* Container com scroll horizontal no mobile */}
       <div className="flex h-16 w-full items-center justify-between overflow-x-auto no-scrollbar px-2 md:h-full md:flex-col md:justify-start md:gap-2 md:px-3 lg:px-4 md:overflow-visible md:pb-6">
         {/* --- Links Principais --- */}
         {navItems.map((item) => {
@@ -118,12 +123,9 @@ export function ResponsiveNav({ userName }: ResponsiveNavProps) {
         })}
 
         {/* --- Ações do Usuário --- */}
-
-        {/* Espaçador invisível: Empurra os itens abaixo para o final da tela no Desktop */}
         <div className="hidden md:block mt-auto" />
         <div className="hidden md:block w-full h-px bg-border/50 my-2" />
 
-        {/* Configurações */}
         <button className={actionItemClass}>
           <Settings className="h-5 w-5" />
           <span className="text-[10px] md:hidden lg:block lg:text-sm font-medium">
@@ -131,7 +133,6 @@ export function ResponsiveNav({ userName }: ResponsiveNavProps) {
           </span>
         </button>
 
-        {/* Tema */}
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
           className={actionItemClass}
@@ -145,32 +146,49 @@ export function ResponsiveNav({ userName }: ResponsiveNavProps) {
           </span>
         </button>
 
-        {/* Perfil (Dropdown Menu) */}
+        {/* Perfil com o Fun Emoji */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button className={actionItemClass}>
-              <User className="h-5 w-5" />
+              <img
+                src={avatarUrl}
+                alt={`Avatar`}
+                className="h-6 w-6 rounded-full bg-primary/10 object-cover"
+              />
               <span className="text-[10px] md:hidden lg:block lg:text-sm font-medium">
                 Perfil
               </span>
             </button>
           </DropdownMenuTrigger>
-          {/* Adicionado side="top" para o menu abrir para cima, já que no mobile a barra fica no final da tela */}
           <DropdownMenuContent
             align="end"
             side="top"
             sideOffset={16}
             className="w-56"
           >
-            {userName && (
-              <>
-                <div className="px-2 py-1.5">
-                  <p className="text-sm font-medium">{userName}</p>
-                  <p className="text-xs text-muted-foreground">Bem-vindo(a)!</p>
-                </div>
-                <DropdownMenuSeparator />
-              </>
-            )}
+            <div className="flex items-center gap-3 px-2 py-2">
+              <img
+                src={avatarUrl}
+                alt="Avatar"
+                className="h-10 w-10 rounded-full bg-primary/10"
+              />
+              <div>
+                <p className="text-sm font-medium leading-none mb-1">
+                  {userName || "Usuário"}
+                </p>
+                <p className="text-xs text-muted-foreground">Bem-vindo(a)!</p>
+              </div>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/profile" className="w-full cursor-pointer">
+                <User className="mr-2 h-4 w-4" />
+                Editar Perfil
+              </Link>
+            </DropdownMenuItem>
+
+            <DropdownMenuSeparator />
+
             <DropdownMenuItem
               onClick={handleLogout}
               disabled={isLoggingOut}

@@ -1,41 +1,43 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Moon, Sun, LogOut, Settings, User } from "lucide-react"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { Moon, Sun, LogOut, Settings, User } from "lucide-react";
+import { useTheme } from "next-themes";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { logout } from "@/app/actions/auth"
+} from "@/components/ui/dropdown-menu";
+import { logout } from "@/app/actions/auth";
 
 interface HeaderProps {
-  userName?: string
+  userName?: string;
 }
 
 export function Header({ userName }: HeaderProps) {
-  const { theme, setTheme } = useTheme()
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const { theme, setTheme } = useTheme();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    setIsLoggingOut(true)
-    await logout()
-  }
+    setIsLoggingOut(true);
+    await logout();
+  };
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground font-bold text-lg">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-linear-to-br from-primary to-primary/80 text-primary-foreground font-bold text-lg">
             N
           </div>
           <div>
             <h1 className="text-lg font-semibold text-foreground">NeuroFlow</h1>
-            <p className="text-xs text-muted-foreground">Seu ritmo, suas regras</p>
+            <p className="text-xs text-muted-foreground">
+              Seu ritmo, suas regras
+            </p>
           </div>
         </div>
 
@@ -63,7 +65,9 @@ export function Header({ userName }: HeaderProps) {
                 <>
                   <div className="px-2 py-1.5">
                     <p className="text-sm font-medium">{userName}</p>
-                    <p className="text-xs text-muted-foreground">Bem-vindo de volta!</p>
+                    <p className="text-xs text-muted-foreground">
+                      Bem-vindo de volta!
+                    </p>
                   </div>
                   <DropdownMenuSeparator />
                 </>
@@ -73,7 +77,7 @@ export function Header({ userName }: HeaderProps) {
                 Configurações
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem 
+              <DropdownMenuItem
                 onClick={handleLogout}
                 disabled={isLoggingOut}
                 className="text-destructive focus:text-destructive"
@@ -86,5 +90,5 @@ export function Header({ userName }: HeaderProps) {
         </div>
       </div>
     </header>
-  )
+  );
 }

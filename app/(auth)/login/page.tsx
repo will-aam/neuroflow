@@ -1,20 +1,20 @@
-"use client"
+"use client";
 
-import { useActionState } from "react"
-import { useState } from "react"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { Eye, EyeOff, Loader2, Brain } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { login, type AuthState } from "@/app/actions/auth"
+import { useActionState } from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Eye, EyeOff, Loader2, Brain } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { login, type AuthState } from "@/app/actions/auth";
 
-const initialState: AuthState = {}
+const initialState: AuthState = {};
 
 export default function LoginPage() {
-  const [state, formAction, isPending] = useActionState(login, initialState)
-  const [showPassword, setShowPassword] = useState(false)
+  const [state, formAction, isPending] = useActionState(login, initialState);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-background px-4">
@@ -26,11 +26,13 @@ export default function LoginPage() {
       >
         <div className="text-center space-y-2">
           <div className="flex justify-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-primary/80 text-primary-foreground">
               <Brain className="h-7 w-7" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-foreground">Bem-vindo de volta</h1>
+          <h1 className="text-2xl font-bold text-foreground">
+            Bem-vindo de volta
+          </h1>
           <p className="text-muted-foreground">
             Entre na sua conta para continuar
           </p>
@@ -68,7 +70,11 @@ export default function LoginPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
               </button>
             </div>
           </div>
@@ -101,7 +107,10 @@ export default function LoginPage() {
 
         <p className="text-center text-sm text-muted-foreground">
           Ainda não tem conta?{" "}
-          <Link href="/register" className="text-primary hover:underline font-medium">
+          <Link
+            href="/register"
+            className="text-primary hover:underline font-medium"
+          >
             Criar conta
           </Link>
         </p>
@@ -111,5 +120,5 @@ export default function LoginPage() {
         </p>
       </motion.div>
     </div>
-  )
+  );
 }

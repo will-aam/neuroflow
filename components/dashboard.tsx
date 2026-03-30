@@ -3,8 +3,7 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { motion } from "framer-motion";
-import { Header } from "@/components/header";
-// Remova o import do BottomNav daqui, vamos colocá-lo no layout!
+
 import { EnergyModeSelector } from "@/components/energy-mode-selector";
 import { HabitsList } from "@/components/habits-list";
 import { DopamineProgress } from "@/components/dopamine-progress";
@@ -72,8 +71,6 @@ export function Dashboard({ user }: DashboardProps) {
   return (
     // Removido o pb-20 fixo e ajustado para dar margem à sidebar no desktop
     <div className="min-h-screen bg-background pb-24 md:pb-6 md:pl-24 lg:pl-64 transition-all">
-      <Header userName={user.name || undefined} />
-
       {/* Adicionado max-w-7xl e mx-auto para centralizar em monitores ultrawide */}
       <main className="container mx-auto px-4 py-6 max-w-7xl">
         <motion.div

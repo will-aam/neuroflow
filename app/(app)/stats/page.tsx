@@ -3,7 +3,7 @@
 import useSWR from "swr";
 import { motion } from "framer-motion";
 import { TrendingUp, Flame, Target, Award } from "lucide-react";
-import { Header } from "@/components/header";
+
 // ❌ REMOVIDO: import { BottomNav } from "@/components/bottom-nav";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -54,8 +54,6 @@ export default function StatsPage() {
   return (
     // ✅ ADICIONADO: Margens para a sidebar no Desktop (md:pl-24 lg:pl-64)
     <div className="min-h-screen bg-background pb-24 md:pb-6 md:pl-24 lg:pl-64 transition-all">
-      <Header />
-
       {/* ✅ ADICIONADO: max-w-7xl e mx-auto para centralizar em telas grandes */}
       <main className="container mx-auto max-w-7xl px-4 py-6 space-y-6">
         <motion.div

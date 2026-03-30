@@ -4,8 +4,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
-import { Header } from "@/components/header";
-// ❌ REMOVIDO: import { BottomNav } from "@/components/bottom-nav"
+
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -78,8 +77,6 @@ export default function CalendarPage() {
   return (
     // ✅ ADICIONADO: Margens para a sidebar no Desktop (md:pl-24 lg:pl-64)
     <div className="min-h-screen bg-background pb-24 md:pb-6 md:pl-24 lg:pl-64 transition-all">
-      <Header />
-
       {/* ✅ ADICIONADO: max-w-7xl e mx-auto para centralizar em telas grandes */}
       <main className="container mx-auto max-w-7xl px-4 py-6 space-y-6">
         <motion.div

@@ -4,7 +4,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, StickyNote, Lightbulb } from "lucide-react";
-import { Header } from "@/components/header";
+
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -91,8 +91,6 @@ export default function NotesPage() {
   return (
     // ✅ AJUSTE: Classes de espaçamento para a Sidebar no Desktop
     <div className="min-h-screen bg-background pb-24 md:pb-6 md:pl-24 lg:pl-64 transition-all">
-      <Header />
-
       {/* ✅ AJUSTE: max-w-7xl e mx-auto para centralizar o conteúdo em monitores grandes */}
       <main className="container mx-auto max-w-7xl px-4 py-6 space-y-6">
         {/* Date navigation */}

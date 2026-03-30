@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { logout } from "@/app/actions/auth";
 import {
@@ -42,7 +42,13 @@ interface ResponsiveNavProps {
 export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Evita erro de hidratação com o tema
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -59,7 +65,7 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 safe-area-inset-bottom
+      className="fixed bottom-0 left-0 right-0 z-40 border-t border-border/50 bg-background/80 backdrop-blur-xl supports-backdrop-filter:bg-background/60 safe-area-inset-bottom
       md:top-0 md:right-auto md:w-24 lg:w-64 md:border-t-0 md:border-r md:h-screen flex md:flex-col transition-all duration-300"
     >
       {/* Logo exclusivo para Desktop */}
@@ -78,8 +84,8 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
         </span>
       </div>
 
-      {/* Container com scroll horizontal no mobile */}
-      <div className="flex h-16 w-full items-center justify-between overflow-x-auto no-scrollbar px-2 md:h-full md:flex-col md:justify-start md:gap-2 md:px-3 lg:px-4 md:overflow-visible md:pb-6">
+      {/* Container: No mobile divide o espaço igualmente (justify-around), no desktop empilha */}
+      <div className="flex h-16 w-full items-center justify-around px-2 md:h-full md:flex-col md:justify-start md:gap-2 md:px-3 lg:px-4 md:pb-6">
         {/* --- Links Principais --- */}
         {navItems.map((item) => {
           const isActive = pathname === item.href;
@@ -88,7 +94,7 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "relative flex flex-col md:flex-row items-center md:justify-center lg:justify-start gap-1 md:gap-4 px-3 md:px-4 py-2 md:py-3 md:w-full md:rounded-xl transition-colors group shrink-0",
+                "relative flex flex-col md:flex-row items-center md:justify-center lg:justify-start gap-1 md:gap-4 px-2 md:px-4 py-2 md:py-3 md:w-full md:rounded-xl transition-colors group shrink-0",
                 isActive
                   ? "text-primary md:bg-primary/10"
                   : "text-muted-foreground hover:text-foreground md:hover:bg-muted",
@@ -111,11 +117,11 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
 
               <item.icon
                 className={cn(
-                  "h-5 w-5",
+                  "h-6 w-6 md:h-5 md:w-5", // Ícone levemente maior no mobile para dar cara de app nativo
                   isActive ? "scale-110 md:scale-100 transition-transform" : "",
                 )}
               />
-              <span className="text-[10px] md:hidden lg:block lg:text-sm font-medium">
+              <span className="text-[10px] md:hidden lg:block lg:text-sm font-medium mt-0.5">
                 {item.label}
               </span>
             </Link>
@@ -126,36 +132,18 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
         <div className="hidden md:block mt-auto" />
         <div className="hidden md:block w-full h-px bg-border/50 my-2" />
 
-        <button className={actionItemClass}>
-          <Settings className="h-5 w-5" />
-          <span className="text-[10px] md:hidden lg:block lg:text-sm font-medium">
-            Config.
-          </span>
-        </button>
-
-        <button
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className={actionItemClass}
-        >
-          <div className="relative h-5 w-5 flex items-center justify-center">
-            <Sun className="absolute h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          </div>
-          <span className="text-[10px] md:hidden lg:block lg:text-sm font-medium">
-            Tema
-          </span>
-        </button>
-
-        {/* Perfil com o Fun Emoji */}
+        {/* Perfil com o Fun Emoji (Agora contém as Configurações e Tema) */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className={actionItemClass}>
-              <img
-                src={avatarUrl}
-                alt={`Avatar`}
-                className="h-6 w-6 rounded-full bg-primary/10 object-cover"
-              />
-              <span className="text-[10px] md:hidden lg:block lg:text-sm font-medium">
+            <button className={cn(actionItemClass, "px-2")}>
+              <div className="relative h-7 w-7 md:h-6 md:w-6 rounded-full border-2 border-primary/20 hover:border-primary transition-colors">
+                <img
+                  src={avatarUrl}
+                  alt={`Avatar`}
+                  className="h-full w-full rounded-full bg-primary/10 object-cover"
+                />
+              </div>
+              <span className="text-[10px] md:hidden lg:block lg:text-sm font-medium mt-0.5">
                 Perfil
               </span>
             </button>
@@ -164,35 +152,66 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
             align="end"
             side="top"
             sideOffset={16}
-            className="w-56"
+            className="w-56 rounded-xl"
           >
-            <div className="flex items-center gap-3 px-2 py-2">
+            <div className="flex items-center gap-3 px-2 py-3">
               <img
                 src={avatarUrl}
                 alt="Avatar"
                 className="h-10 w-10 rounded-full bg-primary/10"
               />
-              <div>
-                <p className="text-sm font-medium leading-none mb-1">
+              <div className="flex flex-col">
+                <p className="text-sm font-semibold leading-none mb-1">
                   {userName || "Usuário"}
                 </p>
                 <p className="text-xs text-muted-foreground">Bem-vindo(a)!</p>
               </div>
             </div>
+
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href="/profile" className="w-full cursor-pointer">
+
+            {/* Opção de Editar Perfil */}
+            <DropdownMenuItem asChild className="rounded-md">
+              <Link href="/profile" className="w-full cursor-pointer py-2">
                 <User className="mr-2 h-4 w-4" />
                 Editar Perfil
               </Link>
             </DropdownMenuItem>
 
+            {/* Opção de Configurações */}
+            <DropdownMenuItem className="cursor-pointer py-2">
+              <Settings className="mr-2 h-4 w-4" />
+              Configurações
+            </DropdownMenuItem>
+
+            {/* Opção de Mudar Tema */}
+            <DropdownMenuItem
+              className="cursor-pointer py-2"
+              onClick={(e) => {
+                e.preventDefault(); // Impede o menu de fechar ao clicar
+                setTheme(theme === "dark" ? "light" : "dark");
+              }}
+            >
+              {mounted && theme === "dark" ? (
+                <>
+                  <Sun className="mr-2 h-4 w-4 text-amber-500" />
+                  Modo Claro
+                </>
+              ) : (
+                <>
+                  <Moon className="mr-2 h-4 w-4 text-blue-500" />
+                  Modo Escuro
+                </>
+              )}
+            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
 
+            {/* Sair */}
             <DropdownMenuItem
               onClick={handleLogout}
               disabled={isLoggingOut}
-              className="text-destructive focus:text-destructive cursor-pointer"
+              className="text-destructive focus:text-destructive cursor-pointer py-2 rounded-md"
             >
               <LogOut className="mr-2 h-4 w-4" />
               {isLoggingOut ? "Saindo..." : "Sair da conta"}

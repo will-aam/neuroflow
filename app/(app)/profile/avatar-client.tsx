@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Loader2, User as UserIcon } from "lucide-react";
-import { Header } from "@/components/header";
+
 import { Button } from "@/components/ui/button";
 import { updateAvatar } from "@/app/actions/profile"; // A server action que criamos!
 
@@ -67,8 +67,6 @@ export function AvatarClient({ user }: AvatarClientProps) {
 
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-6 md:pl-24 lg:pl-64 transition-all">
-      <Header />
-
       <main className="container mx-auto max-w-4xl px-4 py-6 space-y-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

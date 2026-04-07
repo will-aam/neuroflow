@@ -1,7 +1,6 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { Sparkles, Star, Zap } from "lucide-react"
 
 interface DopamineProgressProps {
   completed: number
@@ -29,9 +28,9 @@ export function DopamineProgress({
   }
 
   const getIcon = () => {
-    if (percentage === 100) return <Sparkles className="h-5 w-5" />
-    if (percentage >= 50) return <Star className="h-5 w-5" />
-    return <Zap className="h-5 w-5" />
+    if (percentage === 100) return "auto_awesome"
+    if (percentage >= 50) return "star"
+    return "bolt"
   }
 
   return (
@@ -46,7 +45,7 @@ export function DopamineProgress({
             transition={{ duration: 0.5, repeat: percentage === 100 ? Infinity : 0, repeatDelay: 2 }}
             className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary"
           >
-            {getIcon()}
+            <span className="material-icons text-xl leading-none">{getIcon()}</span>
           </motion.div>
           <div>
             <p className="text-sm font-medium text-foreground">Progresso do dia</p>
@@ -81,7 +80,7 @@ export function DopamineProgress({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="flex h-6 w-6 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
-            <Sparkles className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+            <span className="material-icons text-sm text-amber-600 dark:text-amber-400 leading-none">auto_awesome</span>
           </div>
           <span className="text-sm text-muted-foreground">Pontos de dopamina</span>
         </div>

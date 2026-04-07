@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Check, Loader2, User as UserIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { updateAvatar } from "@/app/actions/profile"; // A server action que criamos!
@@ -142,10 +141,10 @@ export function AvatarClient({ user }: AvatarClientProps) {
               className="w-32 transition-all"
             >
               {isSaving ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="material-icons text-base animate-spin leading-none">autorenew</span>
               ) : showSuccess ? (
                 <>
-                  <Check className="h-4 w-4 mr-2" />
+                  <span className="material-icons text-base mr-2 leading-none">check</span>
                   Salvo!
                 </>
               ) : (

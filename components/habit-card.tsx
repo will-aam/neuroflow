@@ -2,7 +2,6 @@
 
 import { useState, useTransition } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Check, Sparkles, Trash2, Star } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { toggleHabitCompletion, deleteHabit } from "@/app/actions/habits"
@@ -76,7 +75,7 @@ export function HabitCard({ habit, date, isCompleted: initialCompleted }: HabitC
                     animate={{ scale: 1 }}
                     exit={{ scale: 0 }}
                   >
-                    <Check className="h-4 w-4 text-white" />
+                    <span className="material-icons text-base text-white leading-none">check</span>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -105,13 +104,15 @@ export function HabitCard({ habit, date, isCompleted: initialCompleted }: HabitC
               )}
               <div className="flex items-center gap-1 mt-2">
                 {dopamineStars.map((i) => (
-                  <Star
+                  <span
                     key={i}
                     className={cn(
-                      "h-3 w-3",
-                      completed ? "text-amber-400 fill-amber-400" : "text-muted-foreground/30"
+                      "material-icons text-xs leading-none",
+                      completed ? "text-amber-400" : "text-muted-foreground/30"
                     )}
-                  />
+                  >
+                    star
+                  </span>
                 ))}
               </div>
             </div>
@@ -126,7 +127,7 @@ export function HabitCard({ habit, date, isCompleted: initialCompleted }: HabitC
               }}
               disabled={isPending}
             >
-              <Trash2 className="h-4 w-4 text-muted-foreground" />
+              <span className="material-icons text-base text-muted-foreground leading-none">delete</span>
             </Button>
           </div>
         </CardContent>
@@ -160,7 +161,7 @@ export function HabitCard({ habit, date, isCompleted: initialCompleted }: HabitC
                     ease: "easeOut",
                   }}
                 >
-                  <Sparkles className="h-5 w-5 text-amber-400" />
+                  <span className="material-icons text-xl text-amber-400 leading-none">auto_awesome</span>
                 </motion.div>
               ))}
             </motion.div>

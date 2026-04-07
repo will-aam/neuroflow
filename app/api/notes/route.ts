@@ -14,7 +14,7 @@ export async function GET(request: Request) {
   try {
     const notes = await sql`
       SELECT * FROM daily_notes 
-      WHERE user_id = ${session.userId} AND date = ${date}
+      WHERE user_id = ${session.id} AND date = ${date}
     `
 
     // Also get yesterday's reminder if viewing today
@@ -28,7 +28,7 @@ export async function GET(request: Request) {
       
       const yesterdayNote = await sql`
         SELECT reminder_for_tomorrow FROM daily_notes 
-        WHERE user_id = ${session.userId} AND date = ${yesterdayDate}
+        WHERE user_id = ${session.id} AND date = ${yesterdayDate}
       `
       
       if (yesterdayNote.length > 0) {
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
 
     const result = await sql`
       INSERT INTO daily_notes (user_id, date, content, reminder_for_tomorrow)
-      VALUES (${session.userId}, ${date}, ${content}, ${reminderForTomorrow || null})
+      VALUES (${session.id}, ${date}, ${content}, ${reminderForTomorrow || null})
       ON CONFLICT (user_id, date) 
       DO UPDATE SET content = ${content}, reminder_for_tomorrow = ${reminderForTomorrow || null}, updated_at = NOW()
       RETURNING *

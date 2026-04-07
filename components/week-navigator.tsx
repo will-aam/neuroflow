@@ -1,6 +1,5 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format, addDays, startOfWeek, isToday, isSameDay } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -40,7 +39,7 @@ export function WeekNavigator({
           size="icon"
           onClick={() => navigateWeek("prev")}
         >
-          <ChevronLeft className="h-4 w-4" />
+          <span className="material-icons text-base leading-none">chevron_left</span>
         </Button>
         <button
           onClick={goToToday}
@@ -53,7 +52,7 @@ export function WeekNavigator({
           size="icon"
           onClick={() => navigateWeek("next")}
         >
-          <ChevronRight className="h-4 w-4" />
+          <span className="material-icons text-base leading-none">chevron_right</span>
         </Button>
       </div>
 

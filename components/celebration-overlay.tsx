@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Sparkles } from "lucide-react"
 
 interface CelebrationOverlayProps {
   show: boolean
@@ -84,7 +83,7 @@ export function CelebrationOverlay({
               transition={{ duration: 0.5, delay: 0.3 }}
               className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-amber-500 shadow-lg"
             >
-              <Sparkles className="h-8 w-8 text-white" />
+              <span className="material-icons text-4xl text-white leading-none">auto_awesome</span>
             </motion.div>
             <motion.p
               initial={{ opacity: 0, y: 10 }}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Plus, Sunrise, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,9 +18,9 @@ import { createHabit } from "@/app/actions/habits";
 import { cn } from "@/lib/utils";
 
 const phases = [
-  { id: "morning", label: "Manhã", icon: Sunrise },
-  { id: "afternoon", label: "Tarde", icon: Sun },
-  { id: "night", label: "Noite", icon: Moon },
+  { id: "morning", label: "Manhã", icon: "wb_twilight" },
+  { id: "afternoon", label: "Tarde", icon: "wb_sunny" },
+  { id: "night", label: "Noite", icon: "nightlight" },
 ] as const;
 
 export function AddHabitDialog() {
@@ -58,7 +57,7 @@ export function AddHabitDialog() {
       <DialogTrigger asChild>
         {/* Aqui foi alterado para ficar alinhado corretamente com o título */}
         <Button size="sm" className="rounded-full">
-          <Plus className="h-4 w-4 mr-1" />
+          <span className="material-icons text-base mr-1 leading-none">add</span>
           Adicionar
         </Button>
       </DialogTrigger>
@@ -97,7 +96,6 @@ export function AddHabitDialog() {
             <Label>Período do dia</Label>
             <div className="grid grid-cols-3 gap-2">
               {phases.map((p) => {
-                const Icon = p.icon;
                 const isSelected = phase === p.id; // Verifica se este é o selecionado
 
                 return (
@@ -114,7 +112,7 @@ export function AddHabitDialog() {
                     )}
                     onClick={() => setPhase(p.id)}
                   >
-                    <Icon className="h-4 w-4" />
+                    <span className="material-icons text-base leading-none">{p.icon}</span>
                     <span className="text-xs">{p.label}</span>
                   </Button>
                 );

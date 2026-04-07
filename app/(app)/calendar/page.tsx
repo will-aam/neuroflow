@@ -3,7 +3,6 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Check, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -92,7 +91,7 @@ export default function CalendarPage() {
               onClick={() => navigateMonth(-1)}
               className="rounded-full"
             >
-              <ChevronLeft className="h-5 w-5" />
+              <span className="material-icons text-xl leading-none">chevron_left</span>
             </Button>
             <h2 className="text-lg font-semibold text-foreground">
               {MONTHS[month]} {year}
@@ -103,7 +102,7 @@ export default function CalendarPage() {
               onClick={() => navigateMonth(1)}
               className="rounded-full"
             >
-              <ChevronRight className="h-5 w-5" />
+              <span className="material-icons text-xl leading-none">chevron_right</span>
             </Button>
           </div>
 
@@ -198,9 +197,9 @@ export default function CalendarPage() {
                         )}
                       >
                         {isCompleted ? (
-                          <Check className="h-4 w-4" />
+                          <span className="material-icons text-base text-white leading-none">check</span>
                         ) : (
-                          <X className="h-4 w-4 text-muted-foreground" />
+                          <span className="material-icons text-base text-muted-foreground leading-none">close</span>
                         )}
                       </div>
                       <span

@@ -1,3 +1,4 @@
+// Componente principal do dashboard, que integra os outros componentes e gerencia o estado global da página
 "use client";
 
 import { useState } from "react";
@@ -94,7 +95,10 @@ export function Dashboard({ user }: DashboardProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
               >
-                <EnergyModeSelector currentMode={energyMode} />
+                <EnergyModeSelector
+                  currentMode={energyMode}
+                  onModeChange={setEnergyMode} // <-- ADICIONADO AQUI: Passa a função para atualizar o estado
+                />
               </motion.div>
             )}
 

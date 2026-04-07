@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { createHabit } from "@/app/actions/habits";
 import { cn } from "@/lib/utils";
+import { mutate } from "swr"; // <-- ADICIONADO AQUI
 
 const phases = [
   { id: "morning", label: "Manhã", icon: "wb_twilight" },
@@ -48,6 +49,13 @@ export function AddHabitDialog() {
         setPhase("morning");
         setDopamineWeight([2]);
         setIsMiniHabit(false);
+
+        // <-- ADICIONADO AQUI: Avisa o SWR para recarregar todos os hábitos imediatamente
+        mutate(
+          (key) => typeof key === "string" && key.startsWith("/api/habits"),
+          undefined,
+          { revalidate: true },
+        );
       }
     });
   };
@@ -55,7 +63,6 @@ export function AddHabitDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {/* Aqui foi alterado para ficar alinhado corretamente com o título */}
         <Button size="sm" className="rounded-full">
           <span className="material-icons text-base mr-1 leading-none">
             add
@@ -98,17 +105,15 @@ export function AddHabitDialog() {
             <Label>Período do dia</Label>
             <div className="grid grid-cols-3 gap-2">
               {phases.map((p) => {
-                const isSelected = phase === p.id; // Verifica se este é o selecionado
+                const isSelected = phase === p.id;
 
                 return (
                   <Button
                     key={p.id}
                     type="button"
-                    // Troca o visual inteiro do botão baseado na seleção
                     variant={isSelected ? "default" : "outline"}
                     className={cn(
                       "flex flex-col items-center gap-1 h-auto py-3 transition-all",
-                      // Se não estiver selecionado, deixa o texto e ícone mais apagados
                       !isSelected &&
                         "text-muted-foreground hover:text-foreground",
                     )}

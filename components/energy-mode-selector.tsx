@@ -39,12 +39,14 @@ const modes = [
 
 interface EnergyModeSelectorProps {
   currentMode: EnergyMode | null;
-  alreadySelectedToday?: boolean; // Nova prop para o servidor informar se já foi escolhido hoje
+  alreadySelectedToday?: boolean;
+  onModeChange?: (mode: EnergyMode) => void; // <-- Propriedade adicionada para avisar o Dashboard
 }
 
 export function EnergyModeSelector({
   currentMode,
   alreadySelectedToday = false,
+  onModeChange, // <-- Recebendo a nova propriedade
 }: EnergyModeSelectorProps) {
   const [isPending, startTransition] = useTransition();
   const [activeMode, setActiveMode] = useState<EnergyMode | null>(currentMode);
@@ -56,6 +58,11 @@ export function EnergyModeSelector({
 
     setActiveMode(mode);
     setIsLocked(true); // Bloqueia imediatamente após o primeiro clique
+
+    // <-- Avisa o Dashboard sobre a mudança para atualizar os hábitos na mesma hora
+    if (onModeChange) {
+      onModeChange(mode);
+    }
 
     startTransition(async () => {
       await updateEnergyMode(mode);

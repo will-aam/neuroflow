@@ -1,10 +1,11 @@
-import withPWAInit from "next-pwa";
+import withPWAInit from "@ducanh2912/next-pwa";
 
 const withPWA = withPWAInit({
-  dest: "public", // Pasta onde os arquivos do Service Worker serão gerados
+  dest: "public",
   register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === "development", // Desativa no localhost para não atrapalhar o desenvolvimento
+  skipWaiting: true, // Assume o controle na hora
+  cleanupOutdatedCaches: true, // Exclui o lixo da versão anterior
+  disable: process.env.NODE_ENV === "development",
 });
 
 /** @type {import('next').NextConfig} */
@@ -17,5 +18,4 @@ const nextConfig = {
   },
 };
 
-// Exporta a sua configuração envelopada com o PWA
 export default withPWA(nextConfig);

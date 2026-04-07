@@ -91,7 +91,9 @@ export default function CalendarPage() {
               onClick={() => navigateMonth(-1)}
               className="rounded-full"
             >
-              <span className="material-icons text-xl leading-none">chevron_left</span>
+              <span className="material-icons text-xl leading-none">
+                chevron_left
+              </span>
             </Button>
             <h2 className="text-lg font-semibold text-foreground">
               {MONTHS[month]} {year}
@@ -102,7 +104,9 @@ export default function CalendarPage() {
               onClick={() => navigateMonth(1)}
               className="rounded-full"
             >
-              <span className="material-icons text-xl leading-none">chevron_right</span>
+              <span className="material-icons text-xl leading-none">
+                chevron_right
+              </span>
             </Button>
           </div>
 
@@ -197,9 +201,13 @@ export default function CalendarPage() {
                         )}
                       >
                         {isCompleted ? (
-                          <span className="material-icons text-base text-white leading-none">check</span>
+                          <span className="material-icons text-base text-white leading-none">
+                            check
+                          </span>
                         ) : (
-                          <span className="material-icons text-base text-muted-foreground leading-none">close</span>
+                          <span className="material-icons text-base text-muted-foreground leading-none">
+                            close
+                          </span>
                         )}
                       </div>
                       <span

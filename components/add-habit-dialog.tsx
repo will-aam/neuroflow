@@ -57,7 +57,9 @@ export function AddHabitDialog() {
       <DialogTrigger asChild>
         {/* Aqui foi alterado para ficar alinhado corretamente com o título */}
         <Button size="sm" className="rounded-full">
-          <span className="material-icons text-base mr-1 leading-none">add</span>
+          <span className="material-icons text-base mr-1 leading-none">
+            add
+          </span>
           Adicionar
         </Button>
       </DialogTrigger>
@@ -112,7 +114,9 @@ export function AddHabitDialog() {
                     )}
                     onClick={() => setPhase(p.id)}
                   >
-                    <span className="material-icons text-base leading-none">{p.icon}</span>
+                    <span className="material-icons text-base leading-none">
+                      {p.icon}
+                    </span>
                     <span className="text-xs">{p.label}</span>
                   </Button>
                 );

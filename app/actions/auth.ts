@@ -33,6 +33,7 @@ export async function signup(
   }
 
   const { name, email, password } = parsed.data;
+  const displayName = name && name.trim().length >= 2 ? name.trim() : email.split("@")[0];
 
   // Check if user exists
   const existing = await sql`SELECT id FROM users WHERE email = ${email}`;
@@ -44,7 +45,7 @@ export async function signup(
 
   const result = await sql`
     INSERT INTO users (email, password_hash, name)
-    VALUES (${email}, ${passwordHash}, ${name})
+    VALUES (${email}, ${passwordHash}, ${displayName})
     RETURNING id
   `;
 

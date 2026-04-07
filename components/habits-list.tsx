@@ -1,14 +1,13 @@
 "use client"
 
 import { AnimatePresence } from "framer-motion"
-import { Sunrise, Sun, Moon } from "lucide-react"
 import { HabitCard } from "./habit-card"
 import type { Habit, DailyLog } from "@/lib/db"
 
 const phases = [
-  { id: "morning", label: "Manhã - Ativar o Cérebro", icon: Sunrise },
-  { id: "afternoon", label: "Tarde - Produção Leve", icon: Sun },
-  { id: "night", label: "Noite - Desacelerar", icon: Moon },
+  { id: "morning", label: "Manhã - Ativar o Cérebro", icon: "wb_twilight" },
+  { id: "afternoon", label: "Tarde - Produção Leve", icon: "wb_sunny" },
+  { id: "night", label: "Noite - Desacelerar", icon: "nightlight" },
 ] as const
 
 interface HabitsListProps {
@@ -69,12 +68,11 @@ export function HabitsList({ habits, logs, date, energyMode }: HabitsListProps) 
       {/* Habits by phase */}
       {habitsByPhase.map((phase) => {
         if (phase.habits.length === 0) return null
-        const Icon = phase.icon
 
         return (
           <div key={phase.id} className="space-y-3">
             <div className="flex items-center gap-2 text-muted-foreground">
-              <Icon className="h-4 w-4" />
+              <span className="material-icons text-base leading-none">{phase.icon}</span>
               <h2 className="text-sm font-medium">{phase.label}</h2>
             </div>
             <div className="space-y-2">

@@ -3,7 +3,6 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, StickyNote, Lightbulb } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -105,7 +104,7 @@ export default function NotesPage() {
             onClick={() => navigateDay(-1)}
             className="rounded-full"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <span className="material-icons text-xl leading-none">chevron_left</span>
           </Button>
           <div className="text-center">
             <h2 className="text-lg font-semibold text-foreground capitalize">
@@ -120,7 +119,7 @@ export default function NotesPage() {
             disabled={isToday}
             className="rounded-full"
           >
-            <ChevronRight className="h-5 w-5" />
+            <span className="material-icons text-xl leading-none">chevron_right</span>
           </Button>
         </motion.div>
 
@@ -133,7 +132,7 @@ export default function NotesPage() {
           >
             <div className="flex items-start gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/40">
-                <Lightbulb className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                <span className="material-icons text-base text-amber-600 dark:text-amber-400 leading-none">lightbulb</span>
               </div>
               <div>
                 <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
@@ -156,7 +155,7 @@ export default function NotesPage() {
         >
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
-              <StickyNote className="h-5 w-5 text-primary" />
+              <span className="material-icons text-xl text-primary leading-none">sticky_note_2</span>
             </div>
             <div>
               <h3 className="font-semibold text-foreground">Notas do dia</h3>

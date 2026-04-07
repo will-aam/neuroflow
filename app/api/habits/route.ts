@@ -14,13 +14,13 @@ export async function GET(request: Request) {
   try {
     const habits = await sql`
       SELECT * FROM habits 
-      WHERE user_id = ${session.userId} AND is_active = true
+      WHERE user_id = ${session.id} AND is_active = true
       ORDER BY phase, sort_order, created_at
     `
 
     const logs = await sql`
       SELECT * FROM daily_logs 
-      WHERE user_id = ${session.userId} AND date = ${date}
+      WHERE user_id = ${session.id} AND date = ${date}
     `
 
     return NextResponse.json({ habits, logs })
@@ -46,7 +46,7 @@ export async function POST(request: Request) {
 
     const result = await sql`
       INSERT INTO habits (user_id, title, description, frequency, phase, dopamine_weight, is_mini_habit)
-      VALUES (${session.userId}, ${title.trim()}, ${description || null}, ${frequency || 'daily'}, ${phase || 'morning'}, ${dopamineWeight || 1}, ${isMiniHabit || false})
+      VALUES (${session.id}, ${title.trim()}, ${description || null}, ${frequency || 'daily'}, ${phase || 'morning'}, ${dopamineWeight || 1}, ${isMiniHabit || false})
       RETURNING *
     `
 

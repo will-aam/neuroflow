@@ -2,7 +2,6 @@
 
 import useSWR from "swr";
 import { motion } from "framer-motion";
-import { TrendingUp, Flame, Target, Award } from "lucide-react";
 
 // ❌ REMOVIDO: import { BottomNav } from "@/components/bottom-nav";
 
@@ -22,28 +21,28 @@ export default function StatsPage() {
 
   const statCards = [
     {
-      icon: Target,
+      icon: "track_changes",
       label: "Hábitos ativos",
       value: stats.totalHabits,
       color: "text-blue-500",
       bgColor: "bg-blue-100 dark:bg-blue-900/30",
     },
     {
-      icon: Flame,
+      icon: "local_fire_department",
       label: "Sequência atual",
       value: `${stats.currentStreak} dias`,
       color: "text-orange-500",
       bgColor: "bg-orange-100 dark:bg-orange-900/30",
     },
     {
-      icon: Award,
+      icon: "military_tech",
       label: "Melhor sequência",
       value: `${stats.bestStreak} dias`,
       color: "text-purple-500",
       bgColor: "bg-purple-100 dark:bg-purple-900/30",
     },
     {
-      icon: TrendingUp,
+      icon: "trending_up",
       label: "Taxa semanal",
       value: `${stats.weeklyCompletion}%`,
       color: "text-green-500",
@@ -81,7 +80,7 @@ export default function StatsPage() {
               <div
                 className={`flex h-10 w-10 items-center justify-center rounded-full ${stat.bgColor} mb-3`}
               >
-                <stat.icon className={`h-5 w-5 ${stat.color}`} />
+                <span className={`material-icons text-xl leading-none ${stat.color}`}>{stat.icon}</span>
               </div>
               <p className="text-2xl font-bold text-foreground">{stat.value}</p>
               <p className="text-sm text-muted-foreground">{stat.label}</p>
@@ -100,7 +99,7 @@ export default function StatsPage() {
             <h3 className="font-semibold text-foreground mb-4">Dica do dia</h3>
             <div className="flex items-start gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 shrink-0">
-                <Award className="h-4 w-4 text-primary" />
+                <span className="material-icons text-base text-primary leading-none">military_tech</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Lembre-se: consistência é mais importante que perfeição. Um

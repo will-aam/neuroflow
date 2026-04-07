@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Moon, Sun, LogOut, Settings, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import {
@@ -49,14 +48,14 @@ export function Header({ userName }: HeaderProps) {
             className="rounded-full"
             aria-label="Alternar tema"
           >
-            <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span className="material-icons text-xl dark:hidden">light_mode</span>
+            <span className="material-icons text-xl hidden dark:inline">dark_mode</span>
           </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="rounded-full">
-                <User className="h-5 w-5" />
+                <span className="material-icons text-xl">person</span>
                 <span className="sr-only">Menu do usuário</span>
               </Button>
             </DropdownMenuTrigger>
@@ -73,7 +72,7 @@ export function Header({ userName }: HeaderProps) {
                 </>
               )}
               <DropdownMenuItem disabled>
-                <Settings className="mr-2 h-4 w-4" />
+                <span className="material-icons mr-2 text-base leading-none">settings</span>
                 Configurações
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -82,7 +81,7 @@ export function Header({ userName }: HeaderProps) {
                 disabled={isLoggingOut}
                 className="text-destructive focus:text-destructive"
               >
-                <LogOut className="mr-2 h-4 w-4" />
+                <span className="material-icons mr-2 text-base leading-none">logout</span>
                 {isLoggingOut ? "Saindo..." : "Sair"}
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -3,7 +3,6 @@
 import { useActionState, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Eye, EyeOff, Loader2, Brain, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -35,7 +34,7 @@ export default function RegisterPage() {
         <div className="text-center space-y-2">
           <div className="flex justify-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground">
-              <Brain className="h-7 w-7" />
+              <span className="material-icons text-3xl leading-none">psychology</span>
             </div>
           </div>
           <h1 className="text-2xl font-bold text-foreground">Criar conta</h1>
@@ -90,7 +89,11 @@ export default function RegisterPage() {
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >
-                {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                {showPassword ? (
+                  <span className="material-icons text-xl leading-none">visibility_off</span>
+                ) : (
+                  <span className="material-icons text-xl leading-none">visibility</span>
+                )}
               </button>
             </div>
 
@@ -124,7 +127,7 @@ export default function RegisterPage() {
           >
             {isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <span className="material-icons text-base mr-2 animate-spin leading-none">autorenew</span>
                 Criando conta...
               </>
             ) : (
@@ -154,7 +157,7 @@ function PasswordCheck({ checked, label }: { checked: boolean; label: string }) 
       <div className={`flex h-4 w-4 items-center justify-center rounded-full transition-colors ${
         checked ? "bg-green-500 text-white" : "bg-muted"
       }`}>
-        {checked && <Check className="h-3 w-3" />}
+        {checked && <span className="material-icons text-[10px] leading-none">check</span>}
       </div>
       <span className={checked ? "text-muted-foreground" : "text-muted-foreground/60"}>
         {label}

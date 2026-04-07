@@ -12,7 +12,7 @@ export async function GET() {
     // Get total active habits
     const habitsResult = await sql`
       SELECT COUNT(*) as count FROM habits 
-      WHERE user_id = ${session.userId} AND is_active = true
+      WHERE user_id = ${session.id} AND is_active = true
     `
     const totalHabits = parseInt(habitsResult[0]?.count || "0")
 
@@ -20,14 +20,14 @@ export async function GET() {
     const today = new Date().toISOString().split("T")[0]
     const todayResult = await sql`
       SELECT COUNT(*) as count FROM daily_logs 
-      WHERE user_id = ${session.userId} AND date = ${today} AND completed = true
+      WHERE user_id = ${session.id} AND date = ${today} AND completed = true
     `
     const completedToday = parseInt(todayResult[0]?.count || "0")
 
     // Get total completions
     const totalResult = await sql`
       SELECT COUNT(*) as count FROM daily_logs 
-      WHERE user_id = ${session.userId} AND completed = true
+      WHERE user_id = ${session.id} AND completed = true
     `
     const totalCompletions = parseInt(totalResult[0]?.count || "0")
 
@@ -38,7 +38,7 @@ export async function GET() {
 
     const weeklyLogsResult = await sql`
       SELECT COUNT(*) as count FROM daily_logs 
-      WHERE user_id = ${session.userId} 
+      WHERE user_id = ${session.id} 
       AND date >= ${weekAgoString} 
       AND completed = true
     `
@@ -51,7 +51,7 @@ export async function GET() {
     // Calculate current streak (simplified - days with at least one completion)
     const streakResult = await sql`
       SELECT DISTINCT date FROM daily_logs 
-      WHERE user_id = ${session.userId} AND completed = true
+      WHERE user_id = ${session.id} AND completed = true
       ORDER BY date DESC
       LIMIT 30
     `

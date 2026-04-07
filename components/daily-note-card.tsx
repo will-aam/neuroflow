@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useTransition } from "react"
-import { StickyNote, Save, AlertCircle } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -38,14 +37,14 @@ export function DailyNoteCard({ date, note, yesterdayReminder }: DailyNoteCardPr
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-base">
-          <StickyNote className="h-4 w-4 text-amber-500" />
+          <span className="material-icons text-base text-amber-500 leading-none">sticky_note_2</span>
           Bloquinho de Anotações
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {yesterdayReminder && (
           <div className="flex items-start gap-2 p-3 bg-amber-500/10 rounded-lg border border-amber-500/20">
-            <AlertCircle className="h-4 w-4 text-amber-500 mt-0.5 flex-shrink-0" />
+            <span className="material-icons text-base text-amber-500 mt-0.5 flex-shrink-0 leading-none">error</span>
             <div>
               <p className="text-xs font-medium text-amber-600">Lembrete de ontem:</p>
               <p className="text-sm text-foreground">{yesterdayReminder}</p>
@@ -91,7 +90,7 @@ export function DailyNoteCard({ date, note, yesterdayReminder }: DailyNoteCardPr
             "Salvando..."
           ) : saved ? (
             <>
-              <Save className="h-4 w-4 mr-2" />
+              <span className="material-icons text-base mr-2 leading-none">save</span>
               Salvo!
             </>
           ) : (

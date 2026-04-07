@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
     await sql`
       UPDATE users SET energy_mode = ${energyMode}, updated_at = NOW()
-      WHERE id = ${session.userId}
+      WHERE id = ${session.id}
     `
 
     return NextResponse.json({ success: true })

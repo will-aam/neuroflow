@@ -5,17 +5,6 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { logout } from "@/app/actions/auth";
-import {
-  Home,
-  Calendar,
-  StickyNote,
-  BarChart3,
-  Settings,
-  User,
-  Sun,
-  Moon,
-  LogOut,
-} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -28,10 +17,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const navItems = [
-  { href: "/dashboard", icon: Home, label: "Início" },
-  { href: "/calendar", icon: Calendar, label: "Calendário" },
-  { href: "/notes", icon: StickyNote, label: "Notas" },
-  { href: "/stats", icon: BarChart3, label: "Estatísticas" },
+  { href: "/dashboard", icon: "home", label: "Início" },
+  { href: "/calendar", icon: "calendar_month", label: "Calendário" },
+  { href: "/notes", icon: "sticky_note_2", label: "Notas" },
+  { href: "/stats", icon: "bar_chart", label: "Estatísticas" },
 ];
 
 interface ResponsiveNavProps {
@@ -115,12 +104,14 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
                 />
               )}
 
-              <item.icon
+              <span
                 className={cn(
-                  "h-6 w-6 md:h-5 md:w-5", // Ícone levemente maior no mobile para dar cara de app nativo
+                  "material-icons text-2xl md:text-xl leading-none",
                   isActive ? "scale-110 md:scale-100 transition-transform" : "",
                 )}
-              />
+              >
+                {item.icon}
+              </span>
               <span className="text-[10px] md:hidden lg:block lg:text-sm font-medium mt-0.5">
                 {item.label}
               </span>
@@ -173,14 +164,14 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
             {/* Opção de Editar Perfil */}
             <DropdownMenuItem asChild className="rounded-md">
               <Link href="/profile" className="w-full cursor-pointer py-2">
-                <User className="mr-2 h-4 w-4" />
+                <span className="material-icons mr-2 text-base leading-none">person</span>
                 Editar Perfil
               </Link>
             </DropdownMenuItem>
 
             {/* Opção de Configurações */}
             <DropdownMenuItem className="cursor-pointer py-2">
-              <Settings className="mr-2 h-4 w-4" />
+              <span className="material-icons mr-2 text-base leading-none">settings</span>
               Configurações
             </DropdownMenuItem>
 
@@ -194,12 +185,12 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
             >
               {mounted && theme === "dark" ? (
                 <>
-                  <Sun className="mr-2 h-4 w-4 text-amber-500" />
+                  <span className="material-icons mr-2 text-base leading-none text-amber-500">light_mode</span>
                   Modo Claro
                 </>
               ) : (
                 <>
-                  <Moon className="mr-2 h-4 w-4 text-blue-500" />
+                  <span className="material-icons mr-2 text-base leading-none text-blue-500">dark_mode</span>
                   Modo Escuro
                 </>
               )}
@@ -213,7 +204,7 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
               disabled={isLoggingOut}
               className="text-destructive focus:text-destructive cursor-pointer py-2 rounded-md"
             >
-              <LogOut className="mr-2 h-4 w-4" />
+              <span className="material-icons mr-2 text-base leading-none">logout</span>
               {isLoggingOut ? "Saindo..." : "Sair da conta"}
             </DropdownMenuItem>
           </DropdownMenuContent>

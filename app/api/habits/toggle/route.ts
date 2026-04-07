@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
     // Verify habit belongs to user
     const habit = await sql`
-      SELECT id FROM habits WHERE id = ${habitId} AND user_id = ${session.userId}
+      SELECT id FROM habits WHERE id = ${habitId} AND user_id = ${session.id}
     `
 
     if (habit.length === 0) {
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
       // Upsert log
       await sql`
         INSERT INTO daily_logs (user_id, habit_id, date, completed, completed_at)
-        VALUES (${session.userId}, ${habitId}, ${date}, true, NOW())
+        VALUES (${session.id}, ${habitId}, ${date}, true, NOW())
         ON CONFLICT (habit_id, date) 
         DO UPDATE SET completed = true, completed_at = NOW()
       `

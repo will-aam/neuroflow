@@ -4,7 +4,6 @@ import { useActionState } from "react";
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Eye, EyeOff, Loader2, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,7 +26,7 @@ export default function LoginPage() {
         <div className="text-center space-y-2">
           <div className="flex justify-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-primary/80 text-primary-foreground">
-              <Brain className="h-7 w-7" />
+              <span className="material-icons text-3xl leading-none">psychology</span>
             </div>
           </div>
           <h1 className="text-2xl font-bold text-foreground">
@@ -71,9 +70,9 @@ export default function LoginPage() {
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >
                 {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
+                  <span className="material-icons text-xl leading-none">visibility_off</span>
                 ) : (
-                  <Eye className="h-5 w-5" />
+                  <span className="material-icons text-xl leading-none">visibility</span>
                 )}
               </button>
             </div>
@@ -96,7 +95,7 @@ export default function LoginPage() {
           >
             {isPending ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <span className="material-icons text-base mr-2 animate-spin leading-none">autorenew</span>
                 Entrando...
               </>
             ) : (

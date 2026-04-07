@@ -80,7 +80,11 @@ export default function StatsPage() {
               <div
                 className={`flex h-10 w-10 items-center justify-center rounded-full ${stat.bgColor} mb-3`}
               >
-                <span className={`material-icons text-xl leading-none ${stat.color}`}>{stat.icon}</span>
+                <span
+                  className={`material-icons text-xl leading-none ${stat.color}`}
+                >
+                  {stat.icon}
+                </span>
               </div>
               <p className="text-2xl font-bold text-foreground">{stat.value}</p>
               <p className="text-sm text-muted-foreground">{stat.label}</p>
@@ -99,7 +103,9 @@ export default function StatsPage() {
             <h3 className="font-semibold text-foreground mb-4">Dica do dia</h3>
             <div className="flex items-start gap-3">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 shrink-0">
-                <span className="material-icons text-base text-primary leading-none">military_tech</span>
+                <span className="material-icons text-base text-primary leading-none">
+                  military_tech
+                </span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Lembre-se: consistência é mais importante que perfeição. Um

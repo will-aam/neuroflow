@@ -22,7 +22,7 @@ export async function signup(
   formData: FormData,
 ): Promise<AuthState> {
   const raw = {
-    name: formData.get("name"),
+    name: formData.get("name") || undefined,
     email: formData.get("email"),
     password: formData.get("password"),
   };
@@ -33,7 +33,7 @@ export async function signup(
   }
 
   const { name, email, password } = parsed.data;
-  const displayName = name && name.trim().length >= 2 ? name.trim() : email.split("@")[0];
+  const displayName = name ?? email.split("@")[0];
 
   // Check if user exists
   const existing = await sql`SELECT id FROM users WHERE email = ${email}`;

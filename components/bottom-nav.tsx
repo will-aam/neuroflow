@@ -164,16 +164,20 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
             {/* Opção de Editar Perfil */}
             <DropdownMenuItem asChild className="rounded-md">
               <Link href="/profile" className="w-full cursor-pointer py-2">
-                <span className="material-icons mr-2 text-base leading-none">person</span>
+                <span className="material-icons mr-2 text-base leading-none">
+                  person
+                </span>
                 Editar Perfil
               </Link>
             </DropdownMenuItem>
 
             {/* Opção de Configurações */}
-            <DropdownMenuItem className="cursor-pointer py-2">
-              <span className="material-icons mr-2 text-base leading-none">settings</span>
+            {/* <DropdownMenuItem className="cursor-pointer py-2">
+              <span className="material-icons mr-2 text-base leading-none">
+                settings
+              </span>
               Configurações
-            </DropdownMenuItem>
+            </DropdownMenuItem> */}
 
             {/* Opção de Mudar Tema */}
             <DropdownMenuItem
@@ -185,12 +189,16 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
             >
               {mounted && theme === "dark" ? (
                 <>
-                  <span className="material-icons mr-2 text-base leading-none text-amber-500">light_mode</span>
+                  <span className="material-icons mr-2 text-base leading-none text-amber-500">
+                    light_mode
+                  </span>
                   Modo Claro
                 </>
               ) : (
                 <>
-                  <span className="material-icons mr-2 text-base leading-none text-blue-500">dark_mode</span>
+                  <span className="material-icons mr-2 text-base leading-none text-blue-500">
+                    dark_mode
+                  </span>
                   Modo Escuro
                 </>
               )}
@@ -204,7 +212,9 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
               disabled={isLoggingOut}
               className="text-destructive focus:text-destructive cursor-pointer py-2 rounded-md"
             >
-              <span className="material-icons mr-2 text-base leading-none">logout</span>
+              <span className="material-icons mr-2 text-base leading-none">
+                logout
+              </span>
               {isLoggingOut ? "Saindo..." : "Sair da conta"}
             </DropdownMenuItem>
           </DropdownMenuContent>

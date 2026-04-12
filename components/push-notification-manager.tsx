@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-// Função auxiliar para converter a chave VAPID
+// ESSENCIAL: Converte a string do .env para o formato que o navegador exige
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -18,9 +18,7 @@ function urlBase64ToUint8Array(base64String: string) {
 
 export function PushNotificationManager() {
   const [isSupported, setIsSupported] = useState(false);
-  const [subscription, setSubscription] = useState<PushSubscription | null>(
-    null,
-  );
+  const [subscription, setSubscription] = useState<any>(null);
 
   useEffect(() => {
     if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -30,50 +28,54 @@ export function PushNotificationManager() {
   }, []);
 
   async function checkSubscription() {
-    const registration = await navigator.serviceWorker.ready;
-    const sub = await registration.pushManager.getSubscription();
-    setSubscription(sub);
+    try {
+      const registration = await navigator.serviceWorker.ready;
+      const sub = await registration.pushManager.getSubscription();
+      setSubscription(sub);
+    } catch (e) {
+      console.error("Erro ao verificar assinatura:", e);
+    }
   }
 
   async function subscribeToPush() {
     try {
       const registration = await navigator.serviceWorker.ready;
 
-      // 1. Pedir permissão explicitamente
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
-        toast.error("Permissão de notificação negada.");
+        toast.error(
+          "Você precisa permitir as notificações nas configurações do navegador.",
+        );
         return;
       }
 
-      // 2. Converter a chave pública
       const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
       if (!publicKey) {
-        toast.error("Chave pública VAPID não encontrada.");
+        toast.error("Erro: Chave VAPID não configurada.");
         return;
       }
-      const applicationServerKey = urlBase64ToUint8Array(publicKey);
 
-      // 3. Subscrever no browser
       const sub = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: applicationServerKey,
+        applicationServerKey: urlBase64ToUint8Array(publicKey),
       });
 
-      // 4. Enviar para o backend usando .toJSON()
-      // Isso garante que as chaves de criptografia sejam enviadas corretamente
-      await fetch("/api/push/subscribe", {
+      const response = await fetch("/api/push/subscribe", {
         method: "POST",
         body: JSON.stringify(sub.toJSON()),
         headers: { "Content-Type": "application/json" },
       });
 
-      setSubscription(sub);
-      toast.success("Notificações ativadas!");
+      if (response.ok) {
+        setSubscription(sub);
+        toast.success("Notificações ativadas com sucesso!");
+      } else {
+        toast.error("Erro ao salvar assinatura no servidor.");
+      }
     } catch (err) {
-      console.error("Erro ao subscrever:", err);
+      console.error("Erro ao ativar push:", err);
       toast.error(
-        "Erro ao ativar. Certifique-se de que o app está na 'Tela de Início'.",
+        "Não foi possível ativar. Tente fechar e abrir o app novamente.",
       );
     }
   }
@@ -82,14 +84,14 @@ export function PushNotificationManager() {
 
   return (
     <div className="p-4 bg-card border rounded-2xl space-y-3 mt-4">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 text-left">
         <span className="material-icons text-primary">
           notifications_active
         </span>
         <div className="flex-1">
-          <p className="text-sm font-medium">Notificações do Sistema</p>
+          <p className="text-sm font-medium">Alertas no Celular</p>
           <p className="text-xs text-muted-foreground">
-            Receba avisos de compromissos no telemóvel.
+            Ative para receber lembretes de médicos e hábitos.
           </p>
         </div>
       </div>

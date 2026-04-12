@@ -15,7 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DonationModal } from "@/components/donation-modal";
 
 const navItems = [
   { href: "/dashboard", icon: "home", label: "Início" },
@@ -120,8 +119,6 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
 
         {/* --- Ações do Usuário --- */}
         <div className="hidden md:block mt-auto" />
-
-        <DonationModal />
 
         <div className="hidden md:block w-full h-px bg-border/50 my-2" />
 

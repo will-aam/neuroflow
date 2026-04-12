@@ -5,6 +5,16 @@ import useSWR, { mutate } from "swr";
 import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { cn } from "@/lib/utils";
 import { AddEventDialog } from "@/components/add-event-dialog";
 import { PushNotificationManager } from "@/components/push-notification-manager";
@@ -30,6 +40,7 @@ const MONTHS = [
 export default function CalendarPage() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [deletingEvent, setDeletingEvent] = useState<any | null>(null);
 
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
@@ -91,18 +102,19 @@ export default function CalendarPage() {
       );
     }) || [];
 
-  const handleDeleteEvent = async (id: string) => {
-    if (confirm("Deseja excluir este compromisso?")) {
-      try {
-        const response = await fetch(`/api/events/${id}`, {
-          method: "DELETE",
-        });
-        if (response.ok) {
-          mutate("/api/events");
-        }
-      } catch (error) {
-        console.error("Erro ao deletar evento:", error);
+  const handleDeleteEvent = async () => {
+    if (!deletingEvent) return;
+    try {
+      const response = await fetch(`/api/events/${deletingEvent.id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        mutate("/api/events");
       }
+    } catch (error) {
+      console.error("Erro ao deletar evento:", error);
+    } finally {
+      setDeletingEvent(null);
     }
   };
 
@@ -263,7 +275,7 @@ export default function CalendarPage() {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors"
-                      onClick={() => handleDeleteEvent(event.id)}
+                      onClick={() => setDeletingEvent(event)}
                     >
                       <span className="material-icons text-lg">delete</span>
                     </Button>
@@ -340,6 +352,36 @@ export default function CalendarPage() {
         )}
         <PushNotificationManager />
       </main>
+
+      {/* Modal de confirmação de exclusão */}
+      <AlertDialog
+        open={!!deletingEvent}
+        onOpenChange={(open) => {
+          if (!open) setDeletingEvent(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir compromisso</AlertDialogTitle>
+            <AlertDialogDescription>
+              Tem certeza que deseja excluir{" "}
+              <span className="font-semibold text-foreground">
+                {deletingEvent?.title}
+              </span>
+              ? Essa ação não pode ser desfeita.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteEvent}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Excluir
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

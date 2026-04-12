@@ -25,11 +25,7 @@ export default function LoginPage() {
       >
         <div className="text-center space-y-2">
           <div className="flex justify-center">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-primary/80 text-primary-foreground">
-              <span className="material-icons text-3xl leading-none">
-                psychology
-              </span>
-            </div>
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-primary/80 text-primary-foreground"></div>
           </div>
           <h1 className="text-2xl font-bold text-foreground">
             Bem-vindo de volta

@@ -6,6 +6,7 @@ import { DonationButton } from "@/components/donation-button";
 import { PWAUpdater } from "@/components/pwa-updater"; // <-- Importado o nosso monitor de atualização
 
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -80,10 +81,9 @@ export default function RootLayout({
         >
           {/* Adicionamos o PWAUpdater invisível aqui no topo da árvore */}
           <PWAUpdater />
-
           {children}
+          <Toaster /> {/* <-- ADICIONE ISSO AQUI */}
         </ThemeProvider>
-
         <Analytics />
         <DonationButton />
       </body>

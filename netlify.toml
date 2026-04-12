@@ -3,4 +3,4 @@
   publish = ".next"
 
 [functions."cron-notifications"]
-  schedule = "*/5 * * * *"
+  schedule = "* * * * *"

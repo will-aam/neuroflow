@@ -61,3 +61,12 @@ export type Event = {
   created_at: Date;
   updated_at: Date;
 };
+
+export type PushSubscription = {
+  id: string;
+  user_id: string;
+  endpoint: string;
+  p256dh: string;
+  auth: string;
+  created_at: Date;
+};

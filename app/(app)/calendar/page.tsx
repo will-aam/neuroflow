@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { AddEventDialog } from "@/components/add-event-dialog";
+import { PushNotificationManager } from "@/components/push-notification-manager";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -301,6 +302,7 @@ export default function CalendarPage() {
             <AddEventDialog selectedDate={selectedDate} />
           </motion.div>
         )}
+        <PushNotificationManager />
       </main>
     </div>
   );

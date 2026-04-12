@@ -8,7 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
-const VERSION = "?v=1";
+const VERSION = "?v=2"; // Incrementado para forçar atualização no navegador
 
 export const metadata: Metadata = {
   title: "NeuroFlow - Hábitos para mentes neurodivergentes",
@@ -68,8 +68,7 @@ export default function RootLayout({
         >
           <PWAUpdater />
           {children}
-          {/* O Sonner é essencial para vermos os erros na tela do celular */}
-          <Toaster position="top-center" richColors />
+          <Toaster position="top-center" richColors closeButton />
         </ThemeProvider>
         <DonationButton />
       </body>

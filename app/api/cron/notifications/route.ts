@@ -1,12 +1,18 @@
 import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import webpush from "web-push";
-
 export async function GET(request: Request) {
-  // Verificação de Segurança
   const authHeader = request.headers.get("authorization");
-  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return new Response("Não autorizado", { status: 401 });
+  const expectedHeader = `Bearer ${process.env.CRON_SECRET}`;
+
+  if (authHeader !== expectedHeader) {
+    console.error(
+      `Bloqueado! Recebido: "${authHeader}" | Esperado: "${expectedHeader}"`,
+    );
+
+    return new Response(`Não autorizado. Verifique os logs da Netlify.`, {
+      status: 401,
+    });
   }
 
   // ✅ Colocamos a configuração DENTRO da função!

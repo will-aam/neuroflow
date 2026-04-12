@@ -22,11 +22,7 @@ export async function POST(request: Request) {
     // Verify habit belongs to user (Corrigido para session.id)
     const habit = await sql`
       SELECT id FROM habits WHERE id = ${habitId} AND user_id = ${session.id}
-<<<<<<< HEAD
-    `
-=======
     `;
->>>>>>> 2e5de51 (Implement event management API with GET and POST endpoints, including database setup for events table)
 
     if (habit.length === 0) {
       return NextResponse.json({ error: "Habit not found" }, { status: 404 });

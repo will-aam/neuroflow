@@ -21,13 +21,8 @@ export async function GET(request: Request) {
 
     const logs = await sql`
       SELECT * FROM daily_logs 
-<<<<<<< HEAD
-      WHERE user_id = ${session.id} AND date = ${date}
-    `
-=======
       WHERE user_id = ${session.id} AND completed_at = ${date}
     `;
->>>>>>> 2e5de51 (Implement event management API with GET and POST endpoints, including database setup for events table)
 
     return NextResponse.json({ habits, logs });
   } catch (error) {
@@ -62,11 +57,7 @@ export async function POST(request: Request) {
 
     const result = await sql`
       INSERT INTO habits (user_id, title, description, frequency, phase, dopamine_weight, is_mini_habit)
-<<<<<<< HEAD
-      VALUES (${session.id}, ${title.trim()}, ${description || null}, ${frequency || 'daily'}, ${phase || 'morning'}, ${dopamineWeight || 1}, ${isMiniHabit || false})
-=======
       VALUES (${session.id}, ${title.trim()}, ${description || null}, ${frequency || "daily"}, ${phase || "morning"}, ${dopamineWeight || 1}, ${isMiniHabit || false})
->>>>>>> 2e5de51 (Implement event management API with GET and POST endpoints, including database setup for events table)
       RETURNING *
     `;
 

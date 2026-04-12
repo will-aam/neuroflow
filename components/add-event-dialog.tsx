@@ -35,9 +35,10 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
     const formData = new FormData(e.currentTarget);
     const title = formData.get("title") as string;
 
-    // Configura o horário do evento (ex: ajustando para meio-dia como padrão,
-    // ou você pode adicionar um input de hora depois)
+    // Configura a data do evento
     const eventDate = new Date(selectedDate);
+    // Define um horário padrão (meio-dia) para evitar problemas de fuso horário,
+    // futuramente você pode adicionar um seletor de hora se ela pedir!
     eventDate.setHours(12, 0, 0, 0);
 
     startTransition(async () => {
@@ -60,7 +61,7 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
         setError(null);
         setNotifyBefore("0");
 
-        // Atualiza a lista de eventos na tela instantaneamente
+        // Atualiza a lista de eventos instantaneamente na tela
         mutate("/api/events");
       } catch (err: any) {
         setError(err.message || "Ocorreu um erro inesperado");
@@ -105,7 +106,7 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
 
           <div className="space-y-2">
             <Label>Data Selecionada</Label>
-            <div className="p-3 bg-muted rounded-md text-sm font-medium text-muted-foreground">
+            <div className="p-3 bg-muted rounded-md text-sm font-medium text-muted-foreground capitalize">
               {selectedDate.toLocaleDateString("pt-BR", {
                 weekday: "long",
                 day: "2-digit",

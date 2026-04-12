@@ -1,3 +1,4 @@
+// app/(app)/dashboard/page.tsx
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import { sql } from "@/lib/db";

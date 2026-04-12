@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { AddEventDialog } from "@/components/add-event-dialog";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -34,10 +35,14 @@ export default function CalendarPage() {
 
   const selectedDateString = selectedDate?.toISOString().split("T")[0];
 
+  // Busca os hábitos do dia
   const { data: dayData } = useSWR(
     selectedDateString ? `/api/habits?date=${selectedDateString}` : null,
     fetcher,
   );
+
+  // Busca todos os eventos/compromissos do usuário
+  const { data: eventsData } = useSWR("/api/events", fetcher);
 
   const getDaysInMonth = () => {
     const firstDay = new Date(year, month, 1);
@@ -73,10 +78,20 @@ export default function CalendarPage() {
     (l: { completed: boolean }) => l.completed,
   ).length;
 
+  // Filtra os eventos apenas para o dia selecionado
+  const selectedDayEvents =
+    eventsData?.filter((e: any) => {
+      if (!selectedDate) return false;
+      const eventDate = new Date(e.event_date);
+      return (
+        eventDate.getDate() === selectedDate.getDate() &&
+        eventDate.getMonth() === selectedDate.getMonth() &&
+        eventDate.getFullYear() === selectedDate.getFullYear()
+      );
+    }) || [];
+
   return (
-    // ✅ ADICIONADO: Margens para a sidebar no Desktop (md:pl-24 lg:pl-64)
     <div className="min-h-screen bg-background pb-24 md:pb-6 md:pl-24 lg:pl-64 transition-all">
-      {/* ✅ ADICIONADO: max-w-7xl e mx-auto para centralizar em telas grandes */}
       <main className="container mx-auto max-w-7xl px-4 py-6 space-y-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -131,23 +146,38 @@ export default function CalendarPage() {
 
               const isToday = day.getTime() === today.getTime();
               const isSelected = selectedDate?.getTime() === day.getTime();
-              const isFuture = day > today;
+
+              // Verifica se tem evento nesse dia para mostrar uma bolinha indicadora
+              const hasEvent = eventsData?.some((e: any) => {
+                const eDate = new Date(e.event_date);
+                return (
+                  eDate.getDate() === day.getDate() &&
+                  eDate.getMonth() === day.getMonth() &&
+                  eDate.getFullYear() === day.getFullYear()
+                );
+              });
 
               return (
                 <motion.button
                   key={day.toISOString()}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => !isFuture && setSelectedDate(day)}
-                  disabled={isFuture}
+                  onClick={() => setSelectedDate(day)} // Trava do futuro removida!
                   className={cn(
-                    "aspect-square rounded-xl flex items-center justify-center text-sm font-medium transition-colors",
+                    "aspect-square rounded-xl flex flex-col items-center justify-center text-sm font-medium transition-colors relative",
                     isSelected && "bg-primary text-primary-foreground",
                     isToday && !isSelected && "bg-primary/10 text-primary",
-                    !isSelected && !isToday && !isFuture && "hover:bg-muted",
-                    isFuture && "text-muted-foreground/40 cursor-not-allowed",
+                    !isSelected && !isToday && "hover:bg-muted",
                   )}
                 >
-                  {day.getDate()}
+                  <span>{day.getDate()}</span>
+                  {hasEvent && (
+                    <span
+                      className={cn(
+                        "absolute bottom-1.5 w-1 h-1 rounded-full",
+                        isSelected ? "bg-primary-foreground" : "bg-orange-500",
+                      )}
+                    />
+                  )}
                 </motion.button>
               );
             })}
@@ -170,66 +200,108 @@ export default function CalendarPage() {
               </span>
             </div>
 
-            {habits.length === 0 ? (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                Nenhum hábito registrado neste dia
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {habits.map((habit: { id: string; title: string }) => {
-                  const log = logs.find(
-                    (l: { habit_id: string }) => l.habit_id === habit.id,
-                  );
-                  const isCompleted = log?.completed;
-
-                  return (
-                    <div
-                      key={habit.id}
-                      className={cn(
-                        "flex items-center gap-3 p-3 rounded-xl",
-                        isCompleted
-                          ? "bg-green-50 dark:bg-green-900/20"
-                          : "bg-muted/50",
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          "flex h-6 w-6 items-center justify-center rounded-full",
-                          isCompleted
-                            ? "bg-green-500 text-white"
-                            : "bg-muted-foreground/20",
-                        )}
-                      >
-                        {isCompleted ? (
-                          <span className="material-icons text-base text-white leading-none">
-                            check
-                          </span>
-                        ) : (
-                          <span className="material-icons text-base text-muted-foreground leading-none">
-                            close
-                          </span>
-                        )}
-                      </div>
-                      <span
-                        className={cn(
-                          "text-sm",
-                          isCompleted
-                            ? "text-foreground"
-                            : "text-muted-foreground",
-                        )}
-                      >
-                        {habit.title}
+            {/* SEÇÃO DE COMPROMISSOS */}
+            {selectedDayEvents.length > 0 && (
+              <div className="mb-6 space-y-2">
+                <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                  Compromissos
+                </h4>
+                {selectedDayEvents.map((event: any) => (
+                  <div
+                    key={event.id}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-orange-500/10 border border-orange-500/20"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500/20 text-orange-600 dark:text-orange-400">
+                      <span className="material-icons text-base leading-none">
+                        event
                       </span>
                     </div>
-                  );
-                })}
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium text-foreground">
+                        {event.title}
+                      </span>
+                      {event.notify_before > 0 && (
+                        <span className="text-xs text-muted-foreground">
+                          Lembrete:{" "}
+                          {event.notify_before >= 60
+                            ? `${event.notify_before / 60}h`
+                            : `${event.notify_before}m`}{" "}
+                          antes
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
+
+            {/* SEÇÃO DE HÁBITOS */}
+            <div>
+              <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+                Hábitos
+              </h4>
+              {habits.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">
+                  Nenhum hábito registrado neste dia
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {habits.map((habit: { id: string; title: string }) => {
+                    const log = logs.find(
+                      (l: { habit_id: string }) => l.habit_id === habit.id,
+                    );
+                    const isCompleted = log?.completed;
+
+                    return (
+                      <div
+                        key={habit.id}
+                        className={cn(
+                          "flex items-center gap-3 p-3 rounded-xl",
+                          isCompleted
+                            ? "bg-green-50 dark:bg-green-900/20"
+                            : "bg-muted/50",
+                        )}
+                      >
+                        <div
+                          className={cn(
+                            "flex h-6 w-6 items-center justify-center rounded-full",
+                            isCompleted
+                              ? "bg-green-500 text-white"
+                              : "bg-muted-foreground/20",
+                          )}
+                        >
+                          {isCompleted ? (
+                            <span className="material-icons text-base text-white leading-none">
+                              check
+                            </span>
+                          ) : (
+                            <span className="material-icons text-base text-muted-foreground leading-none">
+                              close
+                            </span>
+                          )}
+                        </div>
+                        <span
+                          className={cn(
+                            "text-sm",
+                            isCompleted
+                              ? "text-foreground"
+                              : "text-muted-foreground",
+                          )}
+                        >
+                          {habit.title}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* BOTÃO PARA ADICIONAR NOVO COMPROMISSO */}
+            <AddEventDialog selectedDate={selectedDate} />
           </motion.div>
         )}
       </main>
-
-      {/* ❌ REMOVIDO: <BottomNav /> - Pois ela agora está no layout.tsx global */}
     </div>
   );
 }

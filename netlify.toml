@@ -1,0 +1,13 @@
+[build]
+  command = "pnpm run build"
+  publish = ".next"
+
+# Configura o Cron para chamar a URL a cada 5 minutos
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Esta parte faz o trabalho do CRON na Netlify
+[functions."cron-notifications"]
+  schedule = "*/5 * * * *"

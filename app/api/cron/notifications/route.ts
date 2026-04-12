@@ -2,18 +2,19 @@ import { NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 import webpush from "web-push";
 
-webpush.setVapidDetails(
-  "mailto:seu-email@dominio.com", // <-- Coloque seu email aqui
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!,
-);
-
 export async function GET(request: Request) {
-  // ✅ ADICIONADO: Segurança para garantir que só a Vercel consegue rodar isso
+  // Verificação de Segurança
   const authHeader = request.headers.get("authorization");
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return new Response("Não autorizado", { status: 401 });
   }
+
+  // ✅ Colocamos a configuração DENTRO da função!
+  webpush.setVapidDetails(
+    "mailto:seu-email@dominio.com", // <-- Coloque o seu email aqui
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+    process.env.VAPID_PRIVATE_KEY!,
+  );
 
   try {
     const pendingEvents = await sql`
@@ -29,7 +30,7 @@ export async function GET(request: Request) {
         const payload = JSON.stringify({
           title: "Lembrete de Compromisso",
           body: event.title,
-          icon: "/neuroflow.png", // Ajustado para o ícone que vi nos seus arquivos
+          icon: "/neuroflow.png",
         });
 
         const pushConfig = {

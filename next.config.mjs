@@ -4,9 +4,14 @@ const withPWA = withPWAInit({
   dest: "public",
   register: true,
   skipWaiting: true,
-  cleanupOutdatedCaches: true,
-  // Mantemos como false para garantir que funcione tanto em dev quanto em produção
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+  swcMinify: true,
   disable: false,
+  workboxOptions: {
+    disableDevLogs: true,
+  },
 });
 
 /** @type {import('next').NextConfig} */
@@ -17,8 +22,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Suporte para o novo motor Turbopack do Next.js 16
-  turbopack: {},
+  // Removemos o bloco turbopack daqui para garantir compatibilidade com o plugin
 };
 
 export default withPWA(nextConfig);

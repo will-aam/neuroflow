@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-// ESSENCIAL: Converte a string do .env para o formato que o navegador exige
+// Função para converter a chave VAPID
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -19,6 +19,7 @@ function urlBase64ToUint8Array(base64String: string) {
 export function PushNotificationManager() {
   const [isSupported, setIsSupported] = useState(false);
   const [subscription, setSubscription] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if ("serviceWorker" in navigator && "PushManager" in window) {
@@ -38,28 +39,50 @@ export function PushNotificationManager() {
   }
 
   async function subscribeToPush() {
+    setLoading(true);
+    toast.info("Iniciando ativação...");
+
     try {
+      // Passo 1: Verificar Service Worker
+      toast.info("Passo 1: Verificando Service Worker...");
       const registration = await navigator.serviceWorker.ready;
 
+      if (!registration.pushManager) {
+        toast.error("Este navegador não suporta notificações Push.");
+        return;
+      }
+
+      // Passo 2: Pedir permissão
+      toast.info("Passo 2: Solicitando permissão...");
       const permission = await Notification.requestPermission();
+
       if (permission !== "granted") {
         toast.error(
-          "Você precisa permitir as notificações nas configurações do navegador.",
+          "Permissão negada. Ative manualmente nas configurações do site.",
         );
         return;
       }
 
+      // Passo 3: Chave VAPID
       const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
       if (!publicKey) {
-        toast.error("Erro: Chave VAPID não configurada.");
+        toast.error(
+          "Erro: Chave VAPID (Public Key) não encontrada no ambiente.",
+        );
         return;
       }
 
+      // Passo 4: Gerar assinatura no navegador
+      toast.info("Passo 3: Gerando código de ativação...");
+      const applicationServerKey = urlBase64ToUint8Array(publicKey);
+
       const sub = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(publicKey),
+        applicationServerKey: applicationServerKey,
       });
 
+      // Passo 5: Salvar no banco de dados
+      toast.info("Passo 4: Sincronizando com o servidor...");
       const response = await fetch("/api/push/subscribe", {
         method: "POST",
         body: JSON.stringify(sub.toJSON()),
@@ -70,13 +93,18 @@ export function PushNotificationManager() {
         setSubscription(sub);
         toast.success("Notificações ativadas com sucesso!");
       } else {
-        toast.error("Erro ao salvar assinatura no servidor.");
+        const errorData = await response.json();
+        toast.error(
+          `Erro no servidor: ${errorData.error || "Erro desconhecido"}`,
+        );
       }
-    } catch (err) {
-      console.error("Erro ao ativar push:", err);
+    } catch (err: any) {
+      console.error("Erro fatal ao ativar push:", err);
       toast.error(
-        "Não foi possível ativar. Tente fechar e abrir o app novamente.",
+        `Falha técnica: ${err.message || "Verifique sua conexão ou HTTPS"}`,
       );
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -85,24 +113,40 @@ export function PushNotificationManager() {
   return (
     <div className="p-4 bg-card border rounded-2xl space-y-3 mt-4">
       <div className="flex items-center gap-3 text-left">
-        <span className="material-icons text-primary">
-          notifications_active
-        </span>
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <span className="material-icons text-xl">notifications_active</span>
+        </div>
         <div className="flex-1">
-          <p className="text-sm font-medium">Alertas no Celular</p>
+          <p className="text-sm font-semibold">Alertas Inteligentes</p>
           <p className="text-xs text-muted-foreground">
-            Ative para receber lembretes de médicos e hábitos.
+            Receba lembretes automáticos dos seus compromissos.
           </p>
         </div>
       </div>
+
       <Button
         onClick={subscribeToPush}
         variant={subscription ? "outline" : "default"}
-        className="w-full rounded-xl"
-        disabled={!!subscription}
+        className="w-full rounded-xl h-11 font-medium"
+        disabled={!!subscription || loading}
       >
-        {subscription ? "Notificações Ativas" : "Ativar Notificações"}
+        {loading ? (
+          <span className="flex items-center gap-2">
+            <span className="material-icons animate-spin text-sm">sync</span>
+            Processando...
+          </span>
+        ) : subscription ? (
+          "Notificações Ativadas"
+        ) : (
+          "Ativar Notificações"
+        )}
       </Button>
+
+      {subscription && (
+        <p className="text-[10px] text-center text-muted-foreground">
+          Seu dispositivo está pronto para receber alertas.
+        </p>
+      )}
     </div>
   );
 }

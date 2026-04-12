@@ -5,7 +5,7 @@ const withPWA = withPWAInit({
   register: true,
   skipWaiting: true,
   cleanupOutdatedCaches: true,
-  // Alterado para false para permitir testes de notificação no localhost (pnpm dev)
+  // Mantemos como false para garantir que funcione tanto em dev quanto em produção
   disable: false,
 });
 
@@ -17,7 +17,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Suporte para Turbopack no Next.js 16
+  // Suporte para o novo motor Turbopack do Next.js 16
   turbopack: {},
 };
 

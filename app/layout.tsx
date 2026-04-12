@@ -68,7 +68,7 @@ export default function RootLayout({
         >
           <PWAUpdater />
           {children}
-          {/* Toaster do Sonner para capturar as notificações do Push Manager */}
+          {/* O Sonner é essencial para vermos os erros na tela do celular */}
           <Toaster position="top-center" richColors />
         </ThemeProvider>
         <DonationButton />

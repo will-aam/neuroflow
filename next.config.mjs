@@ -8,6 +8,7 @@ const withPWA = withPWAInit({
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   swcMinify: true,
+  // Mantemos false para gerar o arquivo no build
   disable: false,
   workboxOptions: {
     disableDevLogs: true,
@@ -22,7 +23,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // Removemos o bloco turbopack daqui para garantir compatibilidade com o plugin
+  // No Next 16, o Turbopack no build é opcional,
+  // então não precisamos declarar nada aqui.
 };
 
 export default withPWA(nextConfig);

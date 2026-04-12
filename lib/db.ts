@@ -49,3 +49,15 @@ export type DailyNote = {
   created_at: Date;
   updated_at: Date;
 };
+// Adicione isso no final do seu arquivo lib/db.ts
+
+export type Event = {
+  id: string;
+  user_id: string;
+  title: string;
+  event_date: Date;
+  notify_before: number; // Tempo em minutos (ex: 1440 para 1 dia antes)
+  is_notified: boolean;
+  created_at: Date;
+  updated_at: Date;
+};

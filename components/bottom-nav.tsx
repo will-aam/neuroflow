@@ -15,6 +15,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+// 👇 Importamos o novo componente!
+import { DonationModal } from "@/components/donation-modal";
 
 const navItems = [
   { href: "/dashboard", icon: "home", label: "Início" },
@@ -34,7 +36,6 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
   const [mounted, setMounted] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  // Evita erro de hidratação com o tema
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -45,7 +46,7 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
   };
 
   const actionItemClass =
-    "relative flex flex-col md:flex-row items-center md:justify-center lg:justify-start gap-1 md:gap-4 px-3 md:px-4 py-2 md:py-3 md:w-full md:rounded-xl transition-colors group text-muted-foreground hover:text-foreground md:hover:bg-muted shrink-0 cursor-pointer bg-transparent border-none";
+    "relative flex flex-col md:flex-row items-center md:justify-center lg:justify-start gap-1 md:gap-4 px-1 sm:px-2 md:px-4 py-2 md:py-3 md:w-full md:rounded-xl transition-colors group text-muted-foreground hover:text-foreground md:hover:bg-muted shrink-0 cursor-pointer bg-transparent border-none";
 
   const seedToUse = avatarSeed || userName || "Neuroflow";
   const avatarUrl = `https://api.dicebear.com/9.x/fun-emoji/svg?seed=${encodeURIComponent(
@@ -73,7 +74,6 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
         </span>
       </div>
 
-      {/* Container: No mobile divide o espaço igualmente (justify-around), no desktop empilha */}
       <div className="flex h-16 w-full items-center justify-around px-2 md:h-full md:flex-col md:justify-start md:gap-2 md:px-3 lg:px-4 md:pb-6">
         {/* --- Links Principais --- */}
         {navItems.map((item) => {
@@ -83,7 +83,7 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
               key={item.href}
               href={item.href}
               className={cn(
-                "relative flex flex-col md:flex-row items-center md:justify-center lg:justify-start gap-1 md:gap-4 px-2 md:px-4 py-2 md:py-3 md:w-full md:rounded-xl transition-colors group shrink-0",
+                "relative flex flex-col md:flex-row items-center md:justify-center lg:justify-start gap-1 md:gap-4 px-1 sm:px-2 md:px-4 py-2 md:py-3 md:w-full md:rounded-xl transition-colors group shrink-0",
                 isActive
                   ? "text-primary md:bg-primary/10"
                   : "text-muted-foreground hover:text-foreground md:hover:bg-muted",
@@ -106,7 +106,11 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
 
               <span
                 className={cn(
+<<<<<<< HEAD
                   "material-icons text-2xl md:text-xl leading-none",
+=======
+                  "h-6 w-6 md:h-5 md:w-5",
+>>>>>>> 2e5de51 (Implement event management API with GET and POST endpoints, including database setup for events table)
                   isActive ? "scale-110 md:scale-100 transition-transform" : "",
                 )}
               >
@@ -121,12 +125,16 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
 
         {/* --- Ações do Usuário --- */}
         <div className="hidden md:block mt-auto" />
+
+        {/* 👇 Aqui chamamos o nosso modal limpinho! */}
+        <DonationModal />
+
         <div className="hidden md:block w-full h-px bg-border/50 my-2" />
 
-        {/* Perfil com o Fun Emoji (Agora contém as Configurações e Tema) */}
+        {/* --- Perfil (Configurações e Tema) --- */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className={cn(actionItemClass, "px-2")}>
+            <button className={cn(actionItemClass, "px-1 sm:px-2")}>
               <div className="relative h-7 w-7 md:h-6 md:w-6 rounded-full border-2 border-primary/20 hover:border-primary transition-colors">
                 <img
                   src={avatarUrl}
@@ -161,7 +169,6 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
 
             <DropdownMenuSeparator />
 
-            {/* Opção de Editar Perfil */}
             <DropdownMenuItem asChild className="rounded-md">
               <Link href="/profile" className="w-full cursor-pointer py-2">
                 <span className="material-icons mr-2 text-base leading-none">
@@ -171,19 +178,23 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
               </Link>
             </DropdownMenuItem>
 
+<<<<<<< HEAD
             {/* Opção de Configurações */}
             {/* <DropdownMenuItem className="cursor-pointer py-2">
               <span className="material-icons mr-2 text-base leading-none">
                 settings
               </span>
+=======
+            <DropdownMenuItem className="cursor-pointer py-2">
+              <Settings className="mr-2 h-4 w-4" />
+>>>>>>> 2e5de51 (Implement event management API with GET and POST endpoints, including database setup for events table)
               Configurações
             </DropdownMenuItem> */}
 
-            {/* Opção de Mudar Tema */}
             <DropdownMenuItem
               className="cursor-pointer py-2"
               onClick={(e) => {
-                e.preventDefault(); // Impede o menu de fechar ao clicar
+                e.preventDefault();
                 setTheme(theme === "dark" ? "light" : "dark");
               }}
             >
@@ -206,7 +217,6 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
 
             <DropdownMenuSeparator />
 
-            {/* Sair */}
             <DropdownMenuItem
               onClick={handleLogout}
               disabled={isLoggingOut}

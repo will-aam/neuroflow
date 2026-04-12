@@ -3,18 +3,19 @@ import { sql } from "@/lib/db";
 import webpush from "web-push";
 
 webpush.setVapidDetails(
-  "mailto:teu-email@dominio.com",
+  "mailto:seu-email@dominio.com", // <-- Coloque seu email aqui
   process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
   process.env.VAPID_PRIVATE_KEY!,
 );
 
 export async function GET(request: Request) {
-  // Verificação de segurança para o Cron (ex: Header de autorização da Vercel)
-  // if (request.headers.get('auth') !== process.env.CRON_SECRET) ...
+  // ✅ ADICIONADO: Segurança para garantir que só a Vercel consegue rodar isso
+  const authHeader = request.headers.get("authorization");
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    return new Response("Não autorizado", { status: 401 });
+  }
 
   try {
-    // 1. Procurar eventos que precisam de notificação AGORA
-    // Lógica: (Data do Evento - Minutos de Antecedência) <= Agora E ainda não notificado
     const pendingEvents = await sql`
       SELECT e.*, s.endpoint, s.p256dh, s.auth
       FROM events e
@@ -28,7 +29,7 @@ export async function GET(request: Request) {
         const payload = JSON.stringify({
           title: "Lembrete de Compromisso",
           body: event.title,
-          icon: "/icon-192x192.png",
+          icon: "/neuroflow.png", // Ajustado para o ícone que vi nos seus arquivos
         });
 
         const pushConfig = {
@@ -38,7 +39,6 @@ export async function GET(request: Request) {
 
         await webpush.sendNotification(pushConfig, payload);
 
-        // Marcar como notificado para não repetir
         await sql`UPDATE events SET is_notified = true WHERE id = ${event.id}`;
       }),
     );

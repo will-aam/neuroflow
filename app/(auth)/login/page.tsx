@@ -24,15 +24,13 @@ export default function LoginPage() {
         className="w-full max-w-sm space-y-8"
       >
         <div className="text-center space-y-2">
-<<<<<<< HEAD
           <div className="flex justify-center">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-primary/80 text-primary-foreground">
-              <span className="material-icons text-3xl leading-none">psychology</span>
+              <span className="material-icons text-3xl leading-none">
+                psychology
+              </span>
             </div>
           </div>
-=======
-          <div className="flex justify-center"></div>
->>>>>>> 2e5de51 (Implement event management API with GET and POST endpoints, including database setup for events table)
           <h1 className="text-2xl font-bold text-foreground">
             Bem-vindo de volta
           </h1>
@@ -74,9 +72,13 @@ export default function LoginPage() {
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >
                 {showPassword ? (
-                  <span className="material-icons text-xl leading-none">visibility_off</span>
+                  <span className="material-icons text-xl leading-none">
+                    visibility_off
+                  </span>
                 ) : (
-                  <span className="material-icons text-xl leading-none">visibility</span>
+                  <span className="material-icons text-xl leading-none">
+                    visibility
+                  </span>
                 )}
               </button>
             </div>
@@ -99,7 +101,9 @@ export default function LoginPage() {
           >
             {isPending ? (
               <>
-                <span className="material-icons text-base mr-2 animate-spin leading-none">autorenew</span>
+                <span className="material-icons text-base mr-2 animate-spin leading-none">
+                  autorenew
+                </span>
                 Entrando...
               </>
             ) : (

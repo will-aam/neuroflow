@@ -11,59 +11,50 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import { createHabit } from "@/app/actions/habits";
+import { cn } from "@/lib/utils";
 import { mutate } from "swr";
 
-interface AddEventDialogProps {
-  selectedDate: Date;
-}
+const phases = [
+  { id: "morning", label: "Manhã", icon: "wb_twilight" },
+  { id: "afternoon", label: "Tarde", icon: "wb_sunny" },
+  { id: "night", label: "Noite", icon: "nightlight" },
+] as const;
 
-export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
+export function AddHabitDialog() {
   const [open, setOpen] = useState(false);
-  const [notifyBefore, setNotifyBefore] = useState("0");
+  const [phase, setPhase] = useState<"morning" | "afternoon" | "night">(
+    "morning",
+  );
+  const [dopamineWeight, setDopamineWeight] = useState([2]);
+  const [isMiniHabit, setIsMiniHabit] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const title = formData.get("title") as string;
-
-    // Configura o horário do evento (ex: ajustando para meio-dia como padrão,
-    // ou você pode adicionar um input de hora depois)
-    const eventDate = new Date(selectedDate);
-    eventDate.setHours(12, 0, 0, 0);
+  const handleSubmit = async (formData: FormData) => {
+    formData.set("phase", phase);
+    formData.set("dopamine_weight", dopamineWeight[0].toString());
+    formData.set("is_mini_habit", isMiniHabit.toString());
 
     startTransition(async () => {
-      try {
-        const response = await fetch("/api/events", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title,
-            eventDate: eventDate.toISOString(),
-            notifyBefore: parseInt(notifyBefore),
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error("Erro ao salvar compromisso");
-        }
-
+      const result = await createHabit(formData);
+      if (result.error) {
+        setError(result.error);
+      } else {
         setOpen(false);
         setError(null);
-        setNotifyBefore("0");
+        setPhase("morning");
+        setDopamineWeight([2]);
+        setIsMiniHabit(false);
 
-        // Atualiza a lista de eventos na tela instantaneamente
-        mutate("/api/events");
-      } catch (err: any) {
-        setError(err.message || "Ocorreu um erro inesperado");
+        mutate(
+          (key) => typeof key === "string" && key.startsWith("/api/habits"),
+          undefined,
+          { revalidate: true },
+        );
       }
     });
   };
@@ -71,22 +62,18 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          size="sm"
-          variant="outline"
-          className="rounded-full w-full mt-4 border-dashed border-2"
-        >
+        <Button size="sm" className="rounded-full">
           <span className="material-icons text-base mr-1 leading-none">
-            event
+            add
           </span>
-          Agendar Compromisso
+          Adicionar
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Novo Compromisso</DialogTitle>
+          <DialogTitle>Novo Hábito</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form action={handleSubmit} className="space-y-5">
           {error && (
             <p className="text-sm text-destructive bg-destructive/10 p-2 rounded">
               {error}
@@ -94,47 +81,88 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="title">Título do Compromisso</Label>
+            <Label htmlFor="title">Título</Label>
             <Input
               id="title"
               name="title"
-              placeholder="Ex: Consulta Médica"
+              placeholder="Ex: Beber água ao acordar"
               required
             />
           </div>
 
           <div className="space-y-2">
-            <Label>Data Selecionada</Label>
-            <div className="p-3 bg-muted rounded-md text-sm font-medium text-muted-foreground">
-              {selectedDate.toLocaleDateString("pt-BR", {
-                weekday: "long",
-                day: "2-digit",
-                month: "long",
-                year: "numeric",
+            <Label htmlFor="description">Descrição (opcional)</Label>
+            <Textarea
+              id="description"
+              name="description"
+              placeholder="Detalhes adicionais..."
+              rows={2}
+            />
+          </div>
+
+          <div className="space-y-3">
+            <Label>Período do dia</Label>
+            <div className="grid grid-cols-3 gap-2">
+              {phases.map((p) => {
+                const isSelected = phase === p.id;
+
+                return (
+                  <Button
+                    key={p.id}
+                    type="button"
+                    variant={isSelected ? "default" : "outline"}
+                    className={cn(
+                      "flex flex-col items-center gap-1 h-auto py-3 transition-all",
+                      !isSelected &&
+                        "text-muted-foreground hover:text-foreground",
+                    )}
+                    onClick={() => setPhase(p.id)}
+                  >
+                    <span className="material-icons text-base leading-none">
+                      {p.icon}
+                    </span>
+                    <span className="text-xs">{p.label}</span>
+                  </Button>
+                );
               })}
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label>Lembrar-me</Label>
-            <Select value={notifyBefore} onValueChange={setNotifyBefore}>
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione quando ser lembrado" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0">No momento exato</SelectItem>
-                <SelectItem value="15">15 minutos antes</SelectItem>
-                <SelectItem value="60">1 hora antes</SelectItem>
-                <SelectItem value="1440">1 dia antes</SelectItem>
-              </SelectContent>
-            </Select>
-            <p className="text-xs text-muted-foreground mt-1">
-              O aplicativo enviará uma notificação no seu dispositivo.
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label>Peso de Dopamina</Label>
+              <span className="text-sm text-muted-foreground">
+                {dopamineWeight[0]}/5
+              </span>
+            </div>
+            <Slider
+              value={dopamineWeight}
+              onValueChange={setDopamineWeight}
+              min={1}
+              max={5}
+              step={1}
+            />
+            <p className="text-xs text-muted-foreground">
+              Quanto maior o peso, maior a recompensa visual ao completar.
             </p>
           </div>
 
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label htmlFor="mini">Mini-hábito</Label>
+              <p className="text-xs text-muted-foreground">
+                Aparece em todos os modos de energia
+              </p>
+            </div>
+            <Switch
+              id="mini"
+              checked={isMiniHabit}
+              onCheckedChange={setIsMiniHabit}
+            />
+          </div>
+
           <Button type="submit" className="w-full" disabled={isPending}>
-            {isPending ? "Salvando..." : "Salvar Compromisso"}
+            {isPending ? "Criando..." : "Criar Hábito"}
           </Button>
         </form>
       </DialogContent>

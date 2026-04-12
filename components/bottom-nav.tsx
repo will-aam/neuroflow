@@ -15,7 +15,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// 👇 Importamos o novo componente!
 import { DonationModal } from "@/components/donation-modal";
 
 const navItems = [
@@ -106,11 +105,7 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
 
               <span
                 className={cn(
-<<<<<<< HEAD
                   "material-icons text-2xl md:text-xl leading-none",
-=======
-                  "h-6 w-6 md:h-5 md:w-5",
->>>>>>> 2e5de51 (Implement event management API with GET and POST endpoints, including database setup for events table)
                   isActive ? "scale-110 md:scale-100 transition-transform" : "",
                 )}
               >
@@ -126,7 +121,6 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
         {/* --- Ações do Usuário --- */}
         <div className="hidden md:block mt-auto" />
 
-        {/* 👇 Aqui chamamos o nosso modal limpinho! */}
         <DonationModal />
 
         <div className="hidden md:block w-full h-px bg-border/50 my-2" />
@@ -177,19 +171,6 @@ export function ResponsiveNav({ userName, avatarSeed }: ResponsiveNavProps) {
                 Editar Perfil
               </Link>
             </DropdownMenuItem>
-
-<<<<<<< HEAD
-            {/* Opção de Configurações */}
-            {/* <DropdownMenuItem className="cursor-pointer py-2">
-              <span className="material-icons mr-2 text-base leading-none">
-                settings
-              </span>
-=======
-            <DropdownMenuItem className="cursor-pointer py-2">
-              <Settings className="mr-2 h-4 w-4" />
->>>>>>> 2e5de51 (Implement event management API with GET and POST endpoints, including database setup for events table)
-              Configurações
-            </DropdownMenuItem> */}
 
             <DropdownMenuItem
               className="cursor-pointer py-2"

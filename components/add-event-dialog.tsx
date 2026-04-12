@@ -30,16 +30,23 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
+  // Pega o horário atual para sugerir no input
+  const defaultTime = new Date().toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const title = formData.get("title") as string;
+    const time = formData.get("time") as string; // Ex: "15:30"
 
-    // Configura a data do evento
+    // Combina a data do calendário com o horário do input
+    const [hours, minutes] = time.split(":").map(Number);
     const eventDate = new Date(selectedDate);
-    // Define um horário padrão (meio-dia) para evitar problemas de fuso horário,
-    // futuramente você pode adicionar um seletor de hora se ela pedir!
-    eventDate.setHours(12, 0, 0, 0);
+    eventDate.setHours(hours, minutes, 0, 0);
 
     startTransition(async () => {
       try {
@@ -104,15 +111,25 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label>Data Selecionada</Label>
-            <div className="p-3 bg-muted rounded-md text-sm font-medium text-muted-foreground capitalize">
-              {selectedDate.toLocaleDateString("pt-BR", {
-                weekday: "long",
-                day: "2-digit",
-                month: "long",
-                year: "numeric",
-              })}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Data</Label>
+              <div className="p-2.5 bg-muted rounded-md text-sm font-medium text-muted-foreground capitalize border">
+                {selectedDate.toLocaleDateString("pt-BR", {
+                  day: "2-digit",
+                  month: "2-digit",
+                })}
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="time">Horário</Label>
+              <Input
+                id="time"
+                name="time"
+                type="time"
+                defaultValue={defaultTime}
+                required
+              />
             </div>
           </div>
 

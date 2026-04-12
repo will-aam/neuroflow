@@ -30,7 +30,7 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  // Pega o horário atual para sugerir no input
+  // Sugere o horário atual como padrão no formulário
   const defaultTime = new Date().toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit",
@@ -43,9 +43,14 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
     const title = formData.get("title") as string;
     const time = formData.get("time") as string; // Ex: "15:30"
 
-    // Combina a data do calendário com o horário do input
-    const [hours, minutes] = time.split(":").map(Number);
+    // 1. Pegamos a data que você clicou no calendário
     const eventDate = new Date(selectedDate);
+
+    // 2. Pegamos o horário que você digitou (horas e minutos)
+    const [hours, minutes] = time.split(":").map(Number);
+
+    // 3. Juntamos os dois. Como o navegador está em Aracaju,
+    // ele cria o objeto Date com o fuso horário local correto.
     eventDate.setHours(hours, minutes, 0, 0);
 
     startTransition(async () => {
@@ -53,6 +58,8 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
         const response = await fetch("/api/events", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          // 4. O toISOString() converte o seu horário de Aracaju para UTC (Londres)
+          // antes de mandar para o banco de dados.
           body: JSON.stringify({
             title,
             eventDate: eventDate.toISOString(),
@@ -68,7 +75,7 @@ export function AddEventDialog({ selectedDate }: AddEventDialogProps) {
         setError(null);
         setNotifyBefore("0");
 
-        // Atualiza a lista de eventos instantaneamente na tela
+        // Atualiza a lista na tela imediatamente
         mutate("/api/events");
       } catch (err: any) {
         setError(err.message || "Ocorreu um erro inesperado");

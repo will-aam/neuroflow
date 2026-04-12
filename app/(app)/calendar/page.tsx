@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
@@ -91,6 +91,21 @@ export default function CalendarPage() {
       );
     }) || [];
 
+  const handleDeleteEvent = async (id: string) => {
+    if (confirm("Deseja excluir este compromisso?")) {
+      try {
+        const response = await fetch(`/api/events/${id}`, {
+          method: "DELETE",
+        });
+        if (response.ok) {
+          mutate("/api/events");
+        }
+      } catch (error) {
+        console.error("Erro ao deletar evento:", error);
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24 md:pb-6 md:pl-24 lg:pl-64 transition-all">
       <main className="container mx-auto max-w-7xl px-4 py-6 space-y-6">
@@ -162,7 +177,7 @@ export default function CalendarPage() {
                 <motion.button
                   key={day.toISOString()}
                   whileTap={{ scale: 0.95 }}
-                  onClick={() => setSelectedDate(day)} // Trava do futuro removida!
+                  onClick={() => setSelectedDate(day)}
                   className={cn(
                     "aspect-square rounded-xl flex flex-col items-center justify-center text-sm font-medium transition-colors relative",
                     isSelected && "bg-primary text-primary-foreground",
@@ -210,27 +225,48 @@ export default function CalendarPage() {
                 {selectedDayEvents.map((event: any) => (
                   <div
                     key={event.id}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-orange-500/10 border border-orange-500/20"
+                    className="flex items-center justify-between p-3 rounded-xl bg-orange-500/10 border border-orange-500/20"
                   >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500/20 text-orange-600 dark:text-orange-400">
-                      <span className="material-icons text-base leading-none">
-                        event
-                      </span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-sm font-medium text-foreground">
-                        {event.title}
-                      </span>
-                      {event.notify_before > 0 && (
-                        <span className="text-xs text-muted-foreground">
-                          Lembrete:{" "}
-                          {event.notify_before >= 60
-                            ? `${event.notify_before / 60}h`
-                            : `${event.notify_before}m`}{" "}
-                          antes
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-500/20 text-orange-600 dark:text-orange-400">
+                        <span className="material-icons text-base leading-none">
+                          event
                         </span>
-                      )}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium text-foreground">
+                          {event.title}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {new Date(event.event_date).toLocaleTimeString(
+                            "pt-BR",
+                            {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
+                          {event.notify_before > 0 && (
+                            <>
+                              {" "}
+                              • Lembrete{" "}
+                              {event.notify_before >= 60
+                                ? `${event.notify_before / 60}h`
+                                : `${event.notify_before}m`}{" "}
+                              antes
+                            </>
+                          )}
+                        </span>
+                      </div>
                     </div>
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors"
+                      onClick={() => handleDeleteEvent(event.id)}
+                    >
+                      <span className="material-icons text-lg">delete</span>
+                    </Button>
                   </div>
                 ))}
               </div>
